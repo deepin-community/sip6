@@ -1,0 +1,144 @@
+sip6 (6.4.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 30 Oct 2021 22:18:53 +0300
+
+sip6 (6.3.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 16 Oct 2021 13:07:55 +0300
+
+sip6 (6.2.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update manpages based on command_line_tools.rst changes.
+  * Stop building extension for Python debug interpreter (closes: #994380).
+    - Rely on automatic dbgsym packages for debug symbols.
+  * Drop unicode_docstrings.diff, included in the new release.
+  * Make python3-sipbuild depend on python3-setuptools.
+    - Remove explicit dependency of sip-tools on python3-pkg-resources.
+  * Add superficial import test via autodep8.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 10 Oct 2021 15:08:02 +0300
+
+sip6 (6.1.1+dfsg-3) unstable; urgency=medium
+
+  * Bump Standards-Version to 4.6.0, no changes needed.
+  * Upload to unstable.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 29 Aug 2021 20:36:18 +0300
+
+sip6 (6.1.1+dfsg-2) experimental; urgency=medium
+
+  * Backport upstream patch to fix handling of Unicode docstrings.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Wed, 04 Aug 2021 20:11:04 +0300
+
+sip6 (6.1.1+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Tue, 15 Jun 2021 15:23:49 +0300
+
+sip6 (6.1.0+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Update manpages based on command_line_tools.rst changes.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Fri, 14 May 2021 20:23:32 +0300
+
+sip6 (6.0.3+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Fri, 12 Mar 2021 21:51:12 +0300
+
+sip6 (6.0.2+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Wed, 24 Feb 2021 21:37:08 +0300
+
+sip6 (6.0.1+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 06 Feb 2021 20:24:59 +0300
+
+sip6 (6.0.0+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Rename source package to sip6.
+  * Rename binary packages: sip5-tools to sip-tools, sip5-doc to sip6-doc.
+    - Make sip-tools break/replace old sip5-tools.
+  * Update sip-module manpage based on command_line_tools.rst change.
+  * Bump years in debian/copyright.
+  * Drop sip_pyi_typo.diff and py_typed.diff, included in the new release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Fri, 08 Jan 2021 20:31:57 +0300
+
+sip5 (5.5.0+dfsg-2) unstable; urgency=medium
+
+  * Backport upstream fix for handling of sip.pyi.
+  * Partially backport upstream SIP v6 change to create a PEP 561 py.typed
+    file if dunder-init is specified and at least one set of bindings has
+    pep484-pyi specified (see #978586).
+  * Bump Standards-Version to 4.5.1, no changes needed.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Mon, 04 Jan 2021 20:30:34 +0300
+
+sip5 (5.5.0+dfsg-1) unstable; urgency=medium
+
+  [ Ondřej Nový ]
+  * d/control: Update Maintainer field with new Debian Python Team
+    contact address.
+  * d/control: Update Vcs-* fields with new Debian Python Team Salsa
+    layout.
+
+  [ Dmitry Shachnev ]
+  * New upstream release.
+  * Update SIP License text in debian/copyright.
+  * Update sip-module manpage based on command_line_tools.rst change.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Fri, 27 Nov 2020 18:24:17 +0300
+
+sip5 (5.4.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update sip-install manpage based on command_line_tools.rst change.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 29 Aug 2020 20:56:32 +0300
+
+sip5 (5.3.0+dfsg-2) unstable; urgency=medium
+
+  * Add missing python3-pkg-resources dependency to sip5-tools.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 14 Jun 2020 14:49:11 +0300
+
+sip5 (5.3.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Drop reproducible_extensions.diff, applied upstream.
+  * Update manpages based on command_line_tools.rst changes.
+  * Update to debhelper compat level 13.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Mon, 01 Jun 2020 12:25:47 +0300
+
+sip5 (5.1.2+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Set the earliest year in debian/copyright to 2015.
+  * Add manpages for the tools in sip5-tools.
+  * Add a doc-base file for sip5-doc.
+  * Add debian/upstream/metadata file.
+  * Upload to unstable.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Tue, 07 Apr 2020 18:25:27 +0300
+
+sip5 (5.1.1+dfsg-1) experimental; urgency=medium
+
+  * Initial release (closes: #951459).
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 01 Mar 2020 18:01:44 +0300

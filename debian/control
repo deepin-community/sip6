@@ -1,0 +1,62 @@
+Source: sip6
+Section: devel
+Priority: optional
+Maintainer: Debian Python Team <team+python@tracker.debian.org>
+Uploaders: Dmitry Shachnev <mitya57@debian.org>
+Build-Depends: bison,
+               debhelper-compat (= 13),
+               dh-python,
+               flex,
+               python3-all-dev,
+               python3-packaging,
+               python3-setuptools,
+               python3-toml
+Build-Depends-Indep: dh-sequence-sphinxdoc, python3-doc, python3-sphinx
+Rules-Requires-Root: no
+Standards-Version: 4.6.0
+Homepage: https://riverbankcomputing.com/software/sip/intro
+Vcs-Git: https://salsa.debian.org/python-team/packages/sip6.git
+Vcs-Browser: https://salsa.debian.org/python-team/packages/sip6
+Testsuite: autopkgtest-pkg-python
+
+Package: python3-sipbuild
+Architecture: any
+Section: python
+Depends: python3-setuptools,
+         ${misc:Depends},
+         ${python3:Depends},
+         ${shlibs:Depends}
+Description: Python bindings generator for C/C++ libraries — the build system
+ SIP is a collection of tools that makes it very easy to create Python bindings
+ for C and C++ libraries.
+ .
+ The sipbuild module implements the SIP build system. The module may be used by
+ project-specific project.py scripts or extended by other build systems.
+
+Package: sip-tools
+Architecture: all
+Depends: python3-sipbuild (>= 6.2), ${misc:Depends}, ${python3:Depends}
+Breaks: sip5-tools (<< 6)
+Replaces: sip5-tools (<< 6)
+Description: Python bindings generator for C/C++ libraries — command line tools
+ SIP is a collection of tools that makes it very easy to create Python bindings
+ for C and C++ libraries.
+ .
+ This package contains the following command line tools:
+  - sip-build
+  - sip-distinfo
+  - sip-install
+  - sip-module
+  - sip-sdist
+  - sip-wheel
+
+Package: sip6-doc
+Architecture: all
+Section: doc
+Depends: ${misc:Depends}, ${sphinxdoc:Depends}
+Suggests: python3-doc
+Description: Python bindings generator for C/C++ libraries — documentation
+ SIP is a collection of tools that makes it very easy to create Python bindings
+ for C and C++ libraries.
+ .
+ This package contains the HTML documentation for SIP.

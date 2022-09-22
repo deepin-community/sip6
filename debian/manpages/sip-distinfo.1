@@ -1,0 +1,65 @@
+.TH sip-distinfo 1
+.SH NAME
+sip\-distinfo \- create and populate a \fB\&.dist\-info\fP directory
+.SH SYNOPSIS
+.nf
+sip\-distinfo [options] directory
+.fi
+.sp
+\fBdirectory\fP is the full path name of the directory to create.
+.SH DESCRIPTION
+\fBsip\-distinfo\fP creates and populates a \fB\&.dist\-info\fP directory of
+an installation or a wheel.  It is provided for build systems that extend the
+SIP build system and need to create the \fB\&.dist\-info\fP directory from an
+external tool such as \fBmake\fP\&.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Display a help message.
+.TP
+.B \-V, \-\-version
+Display the SIP version number.
+.TP
+.B \-\-console\-script ENTRY\-POINT
+The console entry point \fBENTRY\-POINT\fP is added to the wheel.  It is
+ignored if the \fI\%\-\-wheel\-tag\fP option is not specified.  This option
+may be specified multiple times.
+.TP
+.B \-\-generator NAME
+If the \fI\%\-\-wheel\-tag\fP option is specified then \fBNAME\fP is written
+as the \fBGenerator\fP in the \fBWHEEL\fP file in the \fB\&.dist\-info\fP
+directory.  Otherwise \fBNAME\fP is written to the \fBINSTALLER\fP file.
+By default \fBsip\-distinfo\fP is written.
+.TP
+.B \-\-gui\-script ENTRY\-POINT
+The GUI entry point \fBENTRY\-POINT\fP is added to the wheel.  It is
+ignored if the \fI\%\-\-wheel\-tag\fP option is not specified.  This option
+may be specified multiple times.
+.TP
+.B \-\-inventory FILE
+\fBFILE\fP contains a list of the relative names of the files, one per line,
+that comprise the installation or wheel contents.  This option must be
+specified.
+.TP
+.B \-\-metadata NAME[=VALUE]
+\fBVALUE\fP is used instead of any value specified for \fBNAME\fP in the
+\fB[tool.sip.metadata]\fP section of the \fBpyproject.toml\fP file.
+.TP
+.B \-\-prefix DIR
+This option is provided as an aid to Linux package builders.  \fBDIR\fP is
+used to pass the commonly used values of \fBDESTDIR\fP or \fBINSTALL_ROOT\fP\&.
+If specified it should have a trailing native path separator.
+.TP
+.B \-\-project\-root DIR
+The name of the directory containing the project\(aqs \fBpyproject.toml\fP
+file is \fBDIR\fP\&.  This option must be specified.
+.TP
+.B \-\-requires\-dist EXPR
+\fBEXPR\fP is added to the list of prerequisites written to the
+\fBMETADATA\fP file in the \fB\&.dist\-info\fP directory.  It is normally
+used to specify a particular version of a package project\(aqs \fBsip\fP
+module.  This option may be specified multiple times.
+.TP
+.B \-\-wheel\-tag TAG
+\fBTAG\fP is written as the \fBTag\fP in the \fBWHEEL\fP file in the
+\fB\&.dist\-info\fP directory.

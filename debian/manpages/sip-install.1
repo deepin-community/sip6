@@ -1,0 +1,91 @@
+.TH sip-install 1
+.SH NAME
+sip\-install \- build and install the sip project
+.SH SYNOPSIS
+.nf
+sip\-install [options]
+.fi
+.SH DESCRIPTION
+\fBsip\-install\fP builds and installs a project.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Display a help message.
+.TP
+.B \-V, \-\-version
+Display the SIP version number.
+.TP
+.B \-\-quiet
+All progress messages are disabled.
+.TP
+.B \-\-verbose
+Verbose progress messages are enabled.
+.TP
+.B \-\-api\-dir DIR
+A QScintilla \fB\&.api\fP file is created in \fBDIR\fP\&.
+.TP
+.B \-\-build\-dir DIR
+\fBDIR\fP is created as a build directory in which all generated files will
+be created.  This build directory is not removed after the build has been
+completed.  By default a temporary build directory is created which is
+removed after the build has been completed.
+.TP
+.B \-\-concatenate N
+The generated code is split into \fBN\fP files.  By default one file is
+generated for each C structure or C++ class.  Specifying a low value of
+\fBN\fP can significantly speed up the build of large projects.
+.TP
+.B \-\-disable NAME
+The \fBNAME\fP bindings are disabled and will not be built.  This option may
+be specified multiple times.  It is only available if the project contains
+multiple sets of bindings.
+.TP
+.B \-\-disabled\-feature TAG
+The \fBTAG\fP feature tag is disabled.  This option may be specified multiple
+times.
+.TP
+.B \-\-enable NAME
+The \fBNAME\fP bindings are enabled and will be built.  Any associated
+configuration tests that would normally be run to determine if the bindings
+should be built are suppressed.  This option may be specified multiple
+times.  It is only available if the project contains multiple sets of
+bindings.
+.TP
+.B \-\-debug
+A build with debugging symbols is performed.
+.TP
+.B \-\-no\-docstrings
+The generation of docstrings that describe the signature of all functions,
+methods and constructors is disabled.
+.TP
+.B \-\-no\-distinfo
+The creation of the \fB\&.dist\-info\fP directory is disabled.
+.TP
+.B \-\-pep484\-pyi
+The generation of Python type hints stub files is enabled.  These files
+contain a description of a module\(aqs API that is compliant with \fI\%PEP 484\fP\&.
+.TP
+.B \-\-protected\-is\-public
+SIP can generate code to provide access to protected C++ functions from
+Python.  On non\-Windows platforms this code can be avoided if the
+\fBprotected\fP keyword is redefined as \fBpublic\fP during compilation.  This
+can result in a significant reduction in the size of a generated Python
+module.  This option enables the redefinition of \fBprotected\fP and is the
+default on all platforms except Windows.
+.TP
+.B \-\-no\-protected\-is\-public
+This option disables the redefinition of \fBprotected\fP to access protected
+C++ functions from Python and is the default on Windows.
+.TP
+.B \-\-scripts\-dir DIR
+Any project scripts will be installed in \fBDIR\fP\&.  If \fBDIR\fP is relative
+then it is taken as relative to the target directory.  By default the
+directory containing the Python interpreter is used.
+.TP
+.B \-\-target\-dir DIR
+The project will be installed in \fBDIR\fP\&.  By default it is the
+\fBsite\-packages\fP directory of the Python installation.
+.TP
+.B \-\-tracing
+Debugging statements that trace the execution of the bindings are
+automatically generated.  By default the statements are not generated.

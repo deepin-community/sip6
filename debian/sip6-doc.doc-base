@@ -1,0 +1,9 @@
+Document: sip6-doc
+Title: SIP Reference Guide and API Documentation
+Author: Riverbank Computing Limited
+Abstract: SIP — Python bindings generator for C and C++ libraries
+Section: Programming/Python
+
+Format: HTML
+Index: /usr/share/doc/sip6-doc/html/index.html
+Files: /usr/share/doc/sip6-doc/html/*.html

@@ -1,0 +1,62 @@
+.TH sip-module 1
+.SH NAME
+sip\-module \- generate a sip extension module
+.SH SYNOPSIS
+.nf
+sip\-module [options] name
+.fi
+.sp
+\fBname\fP is the fully qualified name of the \fBsip\fP module (i.e. including
+the package name).
+.SH DESCRIPTION
+\fBsip\-module\fP builds one of more of the elements of the \fBsip\fP
+module for a set of package projects.
+.SH OPTIONS
+.TP
+.B \-h, \-\-help
+Display a help message.
+.TP
+.B \-V, \-\-version
+Display the SIP version number.
+.TP
+.B \-\-abi\-version MAJOR[.MINOR]
+The major version number of the ABI implemented by the \fBsip\fP module is
+\fBMAJOR\fP\&.  If a minor version number is also specified it is interpreted
+as a minimum minor version rather than the exact minor version to be used.
+By default the very latest version is used.
+.TP
+.B \-\-project NAME
+The name of the project as it would appear on PyPI is \fBNAME\fP\&.  By default
+the name is derived from the fully qualified name of the \fBsip\fP
+module.
+.TP
+.B \-\-sdist
+Create an sdist which can then be installed by \fBpip\fP or uploaded
+to PyPI.
+.TP
+.B \-\-setup\-cfg FILE
+\fBFILE\fP is copied to the sdist as \fBsetup.cfg\fP instead of the default
+version.  This allows the sdist to be customised.  A number of macros may
+be specified in the \fBsetup.cfg\fP file:
+\fB@SIP_MODULE_FQ_NAME@\fP is replaced by the fully qualified name
+of the \fBsip\fP module.
+.sp
+\fB@SIP_MODULE_PACKAGE_NAME@\fP is replaced by the module\(aqs project
+top\-level package name.
+.sp
+\fB@SIP_MODULE_PROJECT_NAME@\fP is replaced by the module\(aqs project name
+as it would appear on PyPI.
+.sp
+\fB@SIP_MODULE_VERSION@\fP is replaced by the version number of the
+module.
+.TP
+.B \-\-sip\-h
+Create a \fBsip.h\fP header file that defines the C ABI implemented by
+the \fBsip\fP module.
+.TP
+.B \-\-sip\-rst
+Create a \fBsip.rst\fP file that documents the Python API implemented by
+the \fBsip\fP module.
+.TP
+.B \-\-target\-dir DIR
+Each of the module\(aqs elements will be created in \fBDIR\fP\&.
