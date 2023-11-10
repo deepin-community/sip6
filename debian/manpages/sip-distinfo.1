@@ -27,9 +27,14 @@ may be specified multiple times.
 .TP
 .B \-\-generator NAME
 If the \fI\%\-\-wheel\-tag\fP option is specified then \fBNAME\fP is written
-as the \fBGenerator\fP in the \fBWHEEL\fP file in the \fB\&.dist\-info\fP
-directory.  Otherwise \fBNAME\fP is written to the \fBINSTALLER\fP file.
-By default \fBsip\-distinfo\fP is written.
+as part of the \fBGenerator\fP in the \fBWHEEL\fP file in the
+\fB\&.dist\-info\fP directory.  Otherwise \fBNAME\fP is written to the
+\fBINSTALLER\fP file.  By default \fBsipbuild\fP is written.
+.TP
+.B \-\-generator\-version VERSION
+\fBVERSION\fP is written as part of the \fBGenerator\fP in the \fBWHEEL\fP
+file in the \fB\&.dist\-info\fP directory.  By default the SIP version
+number is written.
 .TP
 .B \-\-gui\-script ENTRY\-POINT
 The GUI entry point \fBENTRY\-POINT\fP is added to the wheel.  It is

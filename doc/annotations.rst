@@ -542,6 +542,24 @@ Mapped Type Annotations
     :directive:`%ConvertToTypeCode`.
 
 
+.. mapped-type-annotation:: NoAssignmentOperator
+
+    This boolean annotation is used to specify that the C++ type does not have
+    a public assignment operator.
+
+
+.. mapped-type-annotation:: NoCopyCtor
+
+    This boolean annotation is used to specify that the C++ type does not have
+    a public copy constructor.
+
+
+.. mapped-type-annotation:: NoDefaultCtor
+
+    This boolean annotation is used to specify that the C++ type does not have
+    a public default constructor.
+
+
 .. mapped-type-annotation:: NoRelease
 
     This boolean annotation is used to specify that the mapped type does not
@@ -598,8 +616,12 @@ Enum Annotations
 
     This name annotation specifies the type from the :mod:`enum` module
     that will be used as the base type of the enum.  The possible values are
-    :class:`~enum.Enum`, :class:`~enum.Flag`, :class:`~enum.IntEnum` and
-    :class:`~enum.IntFlag`.  The default value is :class:`~enum.Enum`.
+    ``Enum`` (corresponding to :class:`~enum.Enum`), ``Flag`` (corresponding to
+    :class:`~enum.Flag`), ``IntEnum`` (corresponding to
+    :class:`~enum.IntEnum`), ``UIntEnum`` (also corresponding to
+    :class:`~enum.IntEnum` but with unsigned members) and ``IntFlag``
+    (corresponding to :class:`~enum.IntFlag`).  The default value is ``Enum``.
+    The members of ``Flag`` and ``IntFlag`` enums are implicitly unsigned.
 
     This annotation is only available when ABI v13 or later is specified.
 
@@ -765,6 +787,11 @@ Function Annotations
     This boolean annotation specifies that a ``__len__()`` method should be
     automatically generated that will use the method being annotated to compute
     the value that the ``__len__()`` method will return.
+
+    If the class has a ``__getitem__()`` method or an ``operator[]`` operator
+    with an integer argument then those will raise an ``IndexError`` exception
+    if the argument is out of range.  This means that the class will
+    automatically support being iterated over.
 
 
 .. function-annotation:: __matmul__

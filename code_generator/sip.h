@@ -1,7 +1,7 @@
 /*
  * The main header file for SIP.
  *
- * Copyright (c) 2021 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -24,13 +24,16 @@
 #include <sys/types.h>
 
 
-/* Use symbolic names for ABI versions. */
+/* Use symbolic names for (significant) ABI versions. */
 
+#define ABI_13_6    0x0d06
+#define ABI_13_4    0x0d04
 #define ABI_13_1    0x0d01
 #define ABI_13_0    0x0d00
+#define ABI_12_13   0x0c0d
+#define ABI_12_11   0x0c0b
 #define ABI_12_9    0x0c09
 #define ABI_12_8    0x0c08
-#define ABI_12_7    0x0c07
 
 
 #ifdef TRUE
@@ -45,23 +48,6 @@
 #define FALSE   0
 
 
-/* Some convenient compiler extensions. */
-
-#if defined(__GNUC__)
-#define SIP_NORETURN    __attribute__((__noreturn__))
-#define SIP_UNUSED      __attribute__((__unused__))
-#elif defined(_MSC_VER)
-#define SIP_NORETURN    __declspec(noreturn)
-#endif
-
-#if !defined(SIP_NORETURN)
-#define SIP_NORETURN
-#endif
-#if !defined(SIP_UNUSED)
-#define SIP_UNUSED
-#endif
-
-
 #define DEFAULT_OFILE_EXT   ".o"    /* Default object file extension. */
 
 #define MAX_NR_ARGS         20      /* Max. nr. args. to a function or template. */
@@ -72,6 +58,9 @@
 
 #define classBaseName(cd)   scopedNameTail((cd)->iff->fqcname)
 #define classFQCName(cd)    ((cd)->iff->fqcname)
+
+/* Return TRUE if the ABI supports sip.array. */
+#define abiSupportsArray()  (abiVersion >= ABI_13_4 || (abiVersion >= ABI_12_11 && abiVersion < ABI_13_0))
 
 /* Return the Python scope corresponding to a C/C++ scope. */
 #define pyScope(c)          ((c) != NULL && isHiddenNamespace(c) ? NULL : (c))
@@ -84,8 +73,7 @@
 /* Handle module flags. */
 
 #define MOD_HAS_DELAYED_DTORS   0x0001  /* It has a class with a delayed dtor. */
-#define MOD_IS_CONSOLIDATED     0x0002  /* It is a consolidated module. */
-#define MOD_IS_COMPOSITE        0x0004  /* It is a composite module. */
+#define MOD_IS_UNUSED           0x0002  /* This flag is unused. */
 #define MOD_IS_TRANSFORMED      0x0008  /* It's types have been transformed. */
 #define MOD_USE_ARG_NAMES       0x0010  /* Use real argument names. */
 #define MOD_USE_LIMITED_API     0x0020  /* Use the limited API. */
@@ -94,16 +82,10 @@
 #define MOD_SUPER_INIT_YES      0x0100  /* Call super().__init__(). */
 #define MOD_SUPER_INIT_UNDEF    0x0000  /* Calling super().__init__() is undefined. */
 #define MOD_SUPER_INIT_MASK     0x0180  /* The mask for the above flags. */
-#define MOD_SETTING_IMPORTS     0x0200  /* Imports are being set. */
-#define MOD_PY_SSIZE_T_CLEAN    0x0400  /* #define PY_SSIZE_T_CLEAN. */
+#define MOD_PY_SSIZE_T_CLEAN    0x0200  /* #define PY_SSIZE_T_CLEAN. */
 
 #define hasDelayedDtors(m)  ((m)->modflags & MOD_HAS_DELAYED_DTORS)
 #define setHasDelayedDtors(m)   ((m)->modflags |= MOD_HAS_DELAYED_DTORS)
-#define isConsolidated(m)   ((m)->modflags & MOD_IS_CONSOLIDATED)
-#define setIsConsolidated(m)    ((m)->modflags |= MOD_IS_CONSOLIDATED)
-#define isComposite(m)      ((m)->modflags & MOD_IS_COMPOSITE)
-#define setIsComposite(m)   ((m)->modflags |= MOD_IS_COMPOSITE)
-#define isContainer(m)      ((m)->modflags & (MOD_IS_CONSOLIDATED | MOD_IS_COMPOSITE))
 #define setIsTransformed(m) ((m)->modflags |= MOD_IS_TRANSFORMED)
 #define isTransformed(m)    ((m)->modflags & MOD_IS_TRANSFORMED)
 #define setUseArgNames(m)   ((m)->modflags |= MOD_USE_ARG_NAMES)
@@ -116,9 +98,6 @@
 #define setCallSuperInitYes(m)  ((m)->modflags = ((m)->modflags & ~MOD_SUPER_INIT_MASK) | MOD_SUPER_INIT_YES)
 #define isCallSuperInitYes(m)   (((m)->modflags & MOD_SUPER_INIT_MASK) == MOD_SUPER_INIT_YES)
 #define isCallSuperInitUndefined(m) (((m)->modflags & MOD_SUPER_INIT_MASK) == MOD_SUPER_INIT_UNDEF)
-#define settingImports(m)   ((m)->modflags & MOD_SETTING_IMPORTS)
-#define setSettingImports(m)    ((m)->modflags |= MOD_SETTING_IMPORTS)
-#define resetSettingImports(m)  ((m)->modflags &= ~MOD_SETTING_IMPORTS)
 #define setPY_SSIZE_T_CLEAN(m)  ((m)->modflags |= MOD_PY_SSIZE_T_CLEAN)
 #define isPY_SSIZE_T_CLEAN(m)   ((m)->modflags & MOD_PY_SSIZE_T_CLEAN)
 
@@ -152,12 +131,11 @@
 #define CLASS_DTOR_HOLD_GIL 0x00800000  /* The dtor holds the GIL. */
 #define CLASS_ARRAY_HELPER  0x01000000  /* Generate an array helper. */
 #define CLASS_NO_QMETAOBJECT    0x02000000  /* It has no QMetaObject. */
-#define CLASS_IS_TEMPLATE   0x04000000  /* It is a template class. */
-#define CLASS_IS_DEPRECATED 0x08000000  /* It is deprecated. */
-#define CLASS_CANNOT_COPY   0x10000000  /* It cannot be copied. */
-#define CLASS_CANNOT_ASSIGN 0x20000000  /* It cannot be assigned. */
-#define CLASS_ALLOW_NONE    0x40000000  /* The class will handle None. */
-#define CLASS_HAS_NONLAZY   0x80000000  /* The class has non-lazy methods. */
+#define CLASS_IS_DEPRECATED 0x04000000  /* It is deprecated. */
+#define CLASS_CANNOT_COPY   0x08000000  /* It cannot be copied. */
+#define CLASS_CANNOT_ASSIGN 0x10000000  /* It cannot be assigned. */
+#define CLASS_ALLOW_NONE    0x20000000  /* The class will handle None. */
+#define CLASS_HAS_NONLAZY   0x40000000  /* The class has non-lazy methods. */
 
 #define hasSigSlots(cd)     ((cd)->classflags & CLASS_HAS_SIGSLOTS)
 #define setHasSigSlots(cd)  ((cd)->classflags |= CLASS_HAS_SIGSLOTS)
@@ -197,9 +175,6 @@
 #define setArrayHelper(cd)  ((cd)->classflags |= CLASS_ARRAY_HELPER)
 #define noPyQtQMetaObject(cd)   ((cd)->classflags & CLASS_NO_QMETAOBJECT)
 #define setPyQtNoQMetaObject(cd)    ((cd)->classflags |= CLASS_NO_QMETAOBJECT)
-#define isTemplateClass(cd) ((cd)->classflags & CLASS_IS_TEMPLATE)
-#define setIsTemplateClass(cd)  ((cd)->classflags |= CLASS_IS_TEMPLATE)
-#define resetIsTemplateClass(cd)    ((cd)->classflags &= ~CLASS_IS_TEMPLATE)
 #define isDeprecatedClass(cd)   ((cd)->classflags & CLASS_IS_DEPRECATED)
 #define setIsDeprecatedClass(cd)    ((cd)->classflags |= CLASS_IS_DEPRECATED)
 #define cannotCopy(cd)      ((cd)->classflags & CLASS_CANNOT_COPY)
@@ -221,18 +196,14 @@
 
 /* Handle the second group of class flags. */
 
-#define CLASS2_TMPL_ARG     0x01        /* The class is a template argument. */
-#define CLASS2_MIXIN        0x02        /* The class is a mixin. */
-#define CLASS2_EXPORT_DERIVED   0x04    /* Export the derived class declaration. */
-#define CLASS2_HIDDEN_NS    0x08        /* The namespace is hidden. */
-#define CLASS2_USE_TMPL_NAME    0x10    /* Use the template name. */
-#define CLASS2_NEEDS_SHADOW 0x20        /* The class needs a shadow class. */
-#define CLASS2_COPY_HELPER  0x40        /* Generate a copy helper. */
-#define CLASS2_UNION        0x80        /* The class is a union. */
+#define CLASS2_MIXIN        0x01        /* The class is a mixin. */
+#define CLASS2_EXPORT_DERIVED   0x02    /* Export the derived class declaration. */
+#define CLASS2_HIDDEN_NS    0x04        /* The namespace is hidden. */
+#define CLASS2_USE_TMPL_NAME    0x08    /* Use the template name. */
+#define CLASS2_NEEDS_SHADOW 0x10        /* The class needs a shadow class. */
+#define CLASS2_COPY_HELPER  0x20        /* Generate a copy helper. */
+#define CLASS2_UNION        0x40        /* The class is a union. */
 
-#define isTemplateArg(cd)   ((cd)->classflags2 & CLASS2_TMPL_ARG)
-#define setTemplateArg(cd)  ((cd)->classflags2 |= CLASS2_TMPL_ARG)
-#define resetTemplateArg(cd)    ((cd)->classflags2 &= ~CLASS2_TMPL_ARG)
 #define isMixin(cd)         ((cd)->classflags2 & CLASS2_MIXIN)
 #define setMixin(cd)        ((cd)->classflags2 |= CLASS2_MIXIN)
 #define isExportDerived(cd) ((cd)->classflags2 & CLASS2_EXPORT_DERIVED)
@@ -307,11 +278,12 @@
 #define ENUM_NO_SCOPE       0x00000200  /* Omit the member scopes. */
 #define ENUM_NEEDS_ENUM     0x00000400  /* The module needs it. */
 #define ENUM_SCOPED         0x00000800  /* A C++0x11 scoped enum. */
-#define ENUM_MASK           0x00003000  /* The enum base type mask. */
+#define ENUM_MASK           0x00007000  /* The enum base type mask. */
 #define ENUM_ENUM           0x00000000  /* The base type is Enum. */
 #define ENUM_FLAG           0x00001000  /* The base type is Flag. */
 #define ENUM_INT_ENUM       0x00002000  /* The base type is IntEnum. */
 #define ENUM_INT_FLAG       0x00003000  /* The base type is IntFlag. */
+#define ENUM_UINT_ENUM      0x00004000  /* The base type is IntEnum with unsigned members. */
 
 #define isProtectedEnum(e)  ((e)->enumflags & SECT_IS_PROT)
 #define setIsProtectedEnum(e)   ((e)->enumflags |= SECT_IS_PROT)
@@ -335,18 +307,8 @@
 #define setIsEnumIntEnum(e) ((e)->enumflags |= ENUM_INT_ENUM)
 #define isEnumIntFlag(e)    (((e)->enumflags & ENUM_MASK) == ENUM_INT_FLAG)
 #define setIsEnumIntFlag(e) ((e)->enumflags |= ENUM_INT_FLAG)
-
-
-/* Handle hierarchy flags. */
-
-#define HIER_BEING_SET      0x0001      /* The MRO is being set. */
-#define IN_A_DIAMOND        0x0002      /* The class is in a diamond. */
-
-#define hierBeingSet(m)     ((m)->mroflags & HIER_BEING_SET)
-#define setHierBeingSet(m)  ((m)->mroflags |= HIER_BEING_SET)
-#define resetHierBeingSet(m)    ((m)->mroflags &= ~HIER_BEING_SET)
-#define inADiamond(m)       ((m)->mroflags & IN_A_DIAMOND)
-#define setInADiamond(m)    ((m)->mroflags |= IN_A_DIAMOND)
+#define isEnumUIntEnum(e)   (((e)->enumflags & ENUM_MASK) == ENUM_UINT_ENUM)
+#define setIsEnumUIntEnum(e)    ((e)->enumflags |= ENUM_UINT_ENUM)
 
 
 /* Handle overload flags.  These are combined with the section flags. */
@@ -542,6 +504,9 @@
 #define MT_NO_RELEASE       0x01    /* Do not generate a release function. */
 #define MT_ALLOW_NONE       0x02    /* The mapped type will handle None. */
 #define MT_USER_STATE       0x04    /* The convertors need user state. */
+#define MT_NO_ASSIGN_OP     0x08    /* No assignment operator. */
+#define MT_NO_COPY_CTOR     0x10    /* No copy ctor. */
+#define MT_NO_DEFAULT_CTOR  0x20    /* No default ctor. */
 
 #define noRelease(mt)       ((mt)->mtflags & MT_NO_RELEASE)
 #define setNoRelease(mt)    ((mt)->mtflags |= MT_NO_RELEASE)
@@ -549,6 +514,12 @@
 #define setHandlesNone(mt)  ((mt)->mtflags |= MT_ALLOW_NONE)
 #define needsUserState(mt)  ((mt)->mtflags & MT_USER_STATE)
 #define setNeedsUserState(mt)   ((mt)->mtflags |= MT_USER_STATE)
+#define noAssignOp(mt)      ((mt)->mtflags & MT_NO_ASSIGN_OP)
+#define setNoAssignOp(mt)   ((mt)->mtflags |= MT_NO_ASSIGN_OP)
+#define noCopyCtor(mt)      ((mt)->mtflags & MT_NO_COPY_CTOR)
+#define setNoCopyCtor(mt)   ((mt)->mtflags |= MT_NO_COPY_CTOR)
+#define noDefaultCtor(mt)   ((mt)->mtflags & MT_NO_DEFAULT_CTOR)
+#define setNoDefaultCtor(mt)    ((mt)->mtflags |= MT_NO_DEFAULT_CTOR)
 
 
 /* Handle typedef flags. */
@@ -754,7 +725,6 @@ typedef enum {
 /* Type hint parse status. */
 typedef enum {
     needs_parsing,
-    being_parsed,
     parsed
 } typeHintParseStatus;
 
@@ -763,6 +733,7 @@ typedef enum {
 typedef enum {
     typing_node,
     class_node,
+    mapped_type_node,
     enum_node,
     other_node
 } typeHintNodeType;
@@ -794,13 +765,6 @@ typedef struct _qualDef {
     int default_enabled;                /* Enabled by default. */
     struct _qualDef *next;              /* Next in the list. */
 } qualDef;
-
-
-/* A platform. */
-typedef struct _platformDef {
-    struct _qualDef *qualifier;         /* The platform qualifier. */
-    struct _platformDef *next;          /* Next in the list. */
-} platformDef;
 
 
 /* A scoped name. */
@@ -940,6 +904,7 @@ typedef struct _typeHintNodeDef {
     union {
         const char *name;               /* For typing objects and others. */
         struct _classDef *cd;           /* For class nodes. */
+        struct _mappedTypeDef *mtd;     /* For maapped type nodes. */
         struct _enumDef *ed;            /* For enum nodes. */
     } u;
     struct _typeHintNodeDef *children;  /* The list of children. */
@@ -966,8 +931,6 @@ typedef struct _moduleDef {
     Format defdocstringfmt;             /* The default docstring format. */
     Signature defdocstringsig;          /* The default docstring signature. */
     argType encoding;                   /* The default string encoding. */
-    nameDef *defmetatype;               /* The optional default meta-type. */
-    nameDef *defsupertype;              /* The optional default super-type. */
     struct _exceptionDef *defexception; /* The default exception. */
     codeBlockList *hdrcode;             /* Header code. */
     codeBlockList *cppcode;             /* Global C++ code. */
@@ -991,7 +954,6 @@ typedef struct _moduleDef {
     int next_key;                       /* The next key to allocate. */
     licenseDef *license;                /* The software license. */
     struct _classDef *proxies;          /* The list of proxy classes. */
-    struct _moduleDef *container;       /* The container module, if any. */
     struct _ifaceFileList *used;        /* Interface files used. */
     struct _moduleListDef *allimports;  /* The list of all imports. */
     struct _moduleListDef *imports;     /* The list of direct imports. */
@@ -1232,7 +1194,6 @@ typedef struct _virtOverDef {
 /* A class that appears in a class's hierarchy. */
 typedef struct _mroDef {
     struct _classDef *cd;               /* The class. */
-    int mroflags;                       /* The hierarchy flags. */
     struct _mroDef *next;               /* The next in the list. */
 } mroDef;
 
@@ -1283,40 +1244,9 @@ typedef struct _classDef {
     typeHintDef *typehint_in;           /* The PEP 484 input type hint. */
     typeHintDef *typehint_out;          /* The PEP 484 output type hint. */
     const char *typehint_value;         /* The type hint value. */
+    const char *len_cpp_name;           /* The C++ name of any __len__ overload. */
     struct _classDef *next;             /* Next in the list. */
 } classDef;
-
-
-/* A class template definition. */
-typedef struct _classTmplDef {
-    signatureDef sig;                   /* The template arguments. */
-    classDef *cd;                       /* The class itself. */
-    struct _classTmplDef *next;         /* The next in the list. */
-} classTmplDef;
-
-
-/* A mapped type template definition. */
-typedef struct _mappedTypeTmplDef {
-    signatureDef sig;                   /* The template arguments. */
-    mappedTypeDef *mt;                  /* The mapped type itself. */
-    struct _mappedTypeTmplDef *next;    /* The next in the list. */
-} mappedTypeTmplDef;
-
-
-/* The extracts for an identifier. */
-typedef struct _extractDef {
-    const char *id;                     /* The identifier. */
-    struct _extractPartDef *parts;      /* The ordered list of parts. */
-    struct _extractDef *next;           /* The next in the list. */
-} extractDef;
-
-
-/* Part of an extract for an identifier. */
-typedef struct _extractPartDef {
-    int order;                          /* The order of the part. */
-    codeBlock *part;                    /* The part itself. */
-    struct _extractPartDef *next;       /* The next in the list. */
-} extractPartDef;
 
 
 /* A rule for automatic Python naming. */
@@ -1329,14 +1259,11 @@ typedef struct _autoPyNameDef {
 /* The parse tree corresponding to the specification file. */
 typedef struct {
     moduleDef *module;                  /* The module being generated. */
-    moduleDef *modules;                 /* The list of modules. */
     nameDef *namecache;                 /* The name cache. */
     ifaceFileDef *ifacefiles;           /* The list of interface files. */
     classDef *classes;                  /* The list of classes. */
-    classTmplDef *classtemplates;       /* The list of class templates. */
     exceptionDef *exceptions;           /* The list of exceptions. */
     mappedTypeDef *mappedtypes;         /* The mapped types. */
-    mappedTypeTmplDef *mappedtypetemplates; /* The list of mapped type templates. */
     enumDef *enums;                     /* List of enums. */
     varDef *vars;                       /* List of variables. */
     typedefDef *typedefs;               /* List of typedefs. */
@@ -1345,9 +1272,9 @@ typedef struct {
     virtErrorHandler *errorhandlers;    /* The list of virtual error handlers. */
     codeBlockList *exphdrcode;          /* Exported header code. */
     codeBlockList *exptypehintcode;     /* Exported type hint code. */
-    codeBlockList *docs;                /* Documentation. */
     classDef *qobject_cd;               /* QObject class, NULL if none. */
     int genc;                           /* Set if we are generating C code. */
+    int is_composite;                   /* Set if the main module is composite. */
     struct _stringList *plugins;        /* The list of plugins. */
     struct _extractDef *extracts;       /* The list of extracts. */
 } sipSpec;
@@ -1360,288 +1287,43 @@ typedef struct _stringList {
 } stringList;
 
 
-/* File specific context information for the parser. */
-typedef struct _parserContext {
-    const char *filename;               /* The %Import or %Include filename. */
-    int ifdepth;                        /* The depth of nested if's. */
-    moduleDef *prevmod;                 /* The previous module. */
-} parserContext;
-
-
 extern unsigned sipVersion;             /* The version of SIP. */
 extern const char *sipVersionStr;       /* The version of SIP as a string. */
 extern char *sipName;                   /* The name of the sip module. */
 extern unsigned abiVersion;             /* The encoded ABI version number. */
-extern stringList *includeDirList;      /* The include directory list for SIP files. */
 
 
-void parse(sipSpec *, FILE *, char *, int, stringList **, stringList *,
-        stringList **, int, stringList **sip_files);
 void get_bindings_configuration(const char *sip_file, stringList **tags,
         stringList **disabled);
-void parserEOF(const char *,parserContext *);
-void transform(sipSpec *, int);
 stringList *generateCode(sipSpec *, char *, const char *, int, int, int, int,
         stringList *needed_qualifiers, stringList *, int, int,
         const char **api_header);
-void generateExtracts(sipSpec *pt, const stringList *extracts);
-void addExtractPart(sipSpec *pt, const char *id, int order, codeBlock *part);
-void generateAPI(sipSpec *pt, moduleDef *mod, const char *apiFile);
-void generateXML(sipSpec *pt, moduleDef *mod, const char *xmlFile);
-void generateTypeHints(sipSpec *pt, moduleDef *mod, const char *pyiFile);
 void generateExpression(valueDef *vd, int in_str, FILE *fp);
-void warning(Warning w, const char *fmt, ...);
-void deprecated(const char *msg);
-SIP_NORETURN void fatal(const char *fmt, ...);
-void fatalAppend(const char *fmt, ...);
-void fatalScopedName(scopedNameDef *);
-void getSourceLocation(sourceLocation *slp);
-int setInputFile(FILE *open_fp, parserContext *pc, int optional);
-void resetLexerState(void);
+int error(const char *fmt, ...);
+void errorAppend(const char *fmt, ...);
 void *sipMalloc(size_t n);
 void *sipCalloc(size_t nr, size_t n);
 char *sipStrdup(const char *);
 char *concat(const char *, ...);
 void append(char **, const char *);
-void appendToIfaceFileList(ifaceFileList **ifflp, ifaceFileDef *iff);
-int selectedQualifier(stringList *needed_qualifiers, qualDef *qd);
-int excludedFeature(stringList *,qualDef *);
-int sameSignature(signatureDef *,signatureDef *,int);
-int sameTemplateSignature(signatureDef *tmpl_sd, signatureDef *args_sd,
-        int deep);
 int compareScopedNames(scopedNameDef *snd1, scopedNameDef *snd2);
-int sameBaseType(argDef *,argDef *);
 char *scopedNameTail(scopedNameDef *);
-scopedNameDef *copyScopedName(scopedNameDef *);
-void appendScopedName(scopedNameDef **,scopedNameDef *);
-scopedNameDef *text2scopePart(char *text);
-void freeScopedName(scopedNameDef *);
-void appendToClassList(classList **,classDef *);
-void appendCodeBlockList(codeBlockList **headp, codeBlockList *cbl);
 void prcode(FILE *fp, const char *fmt, ...);
 void prCopying(FILE *fp, moduleDef *mod, const char *comment);
-void prOverloadName(FILE *fp, overDef *od);
-void prDefaultValue(argDef *ad, int in_str, FILE *fp);
+void prDefaultValue(argDef *ad, int voidptr, FILE *fp);
 void prScopedPythonName(FILE *fp, classDef *scope, const char *pyname);
-void searchTypedefs(sipSpec *pt, scopedNameDef *snd, argDef *ad);
-int isZeroArgSlot(memberDef *md);
-int isIntReturnSlot(memberDef *md);
-int isSSizeReturnSlot(memberDef *md);
-int isHashReturnSlot(memberDef *md);
-int isVoidReturnSlot(memberDef *md);
 int isNumberSlot(memberDef *md);
-int isInplaceNumberSlot(memberDef *md);
-int isRichCompareSlot(memberDef *md);
-mappedTypeDef *allocMappedType(sipSpec *pt, argDef *type);
 void appendString(stringList **headp, const char *s);
-void appendTypeStrings(scopedNameDef *ename, signatureDef *patt, signatureDef *src, signatureDef *known, scopedNameDef **names, scopedNameDef **values);
-codeBlockList *templateCode(sipSpec *pt, ifaceFileList **used,
-        codeBlockList *ocbl, scopedNameDef *names, scopedNameDef *values);
-ifaceFileDef *findIfaceFile(sipSpec *pt, moduleDef *mod,
-        scopedNameDef *fqname, ifaceFileType iftype, argDef *ad);
 int pluginPyQt5(sipSpec *pt);
 int pluginPyQt6(sipSpec *pt);
-SIP_NORETURN void yyerror(char *);
-void yywarning(char *);
-int yylex(void);
-nameDef *cacheName(sipSpec *pt, const char *name);
-scopedNameDef *encodedTemplateName(templateDef *td);
 memberDef *findMethod(classDef *cd, const char *name);
-typeHintDef *newTypeHint(char *raw_hint);
-int isPyKeyword(const char *word);
-char *templateString(const char *src, scopedNameDef *names,
-        scopedNameDef *values);
-void dsCtor(sipSpec *pt, classDef *cd, ctorDef *ct, FILE *fp);
-void dsOverload(sipSpec *pt, overDef *od, int is_method, FILE *fp);
-scopedNameDef *getFQCNameOfType(argDef *ad);
+void pyiCtor(sipSpec *pt, moduleDef *mod, classDef *cd, ctorDef *ct, FILE *fp);
+void pyiOverload(sipSpec *pt, moduleDef *mod, overDef *od, int is_method,
+        FILE *fp);
 scopedNameDef *removeGlobalScope(scopedNameDef *snd);
-void pyiTypeHint(sipSpec *pt, typeHintDef *thd, moduleDef *mod, int out,
-        ifaceFileList *defined, int pep484, int rest, FILE *fp);
-void restPyClass(classDef *cd, FILE *fp);
-void restPyEnum(enumDef *ed, FILE *fp);
 void generateBaseType(ifaceFileDef *scope, argDef *ad, int use_typename,
         int strip, FILE *fp);
 void normaliseArgs(signatureDef *sd);
 void restoreArgs(signatureDef *sd);
-void initialiseLexer(void);
-int usedInCode(codeBlockList *cbl, const char *str);
-
-
-/* These are only here because bison publically references them. */
-
-/* Represent a set of option flags. */
-
-#define MAX_NR_FLAGS    5
-
-typedef enum {
-    bool_flag,
-    string_flag,
-    string_list_flag,
-    name_flag,
-    opt_name_flag,
-    dotted_name_flag,
-    integer_flag,
-    opt_integer_flag,
-} flagType;
-
-typedef struct {
-    const char *fname;                  /* The flag name. */
-    flagType ftype;                     /* The flag type. */
-    union {                             /* The flag value. */
-        char *sval;                     /* A string value. */
-        struct _stringList *slval;      /* A string list value. */
-        long ival;                      /* An integer value. */
-    } fvalue;
-} optFlag;
-
-typedef struct {
-    int nrFlags;                        /* The number of flags. */
-    optFlag flags[MAX_NR_FLAGS];        /* Each flag. */
-} optFlags;
-
-
-/* These represent the configuration of different directives. */
-
-/* %AutoPyName */
-typedef struct _autoPyNameCfg {
-    int token;
-    const char *remove_leading;
-} autoPyNameCfg;
-
-/* %CompositeModule */
-typedef struct _compModuleCfg {
-    int token;
-    const char *name;
-    docstringDef *docstring;
-} compModuleCfg;
-
-/* %DefaultDocstringFormat */
-typedef struct _defDocstringFmtCfg {
-    int token;
-    const char *name;
-} defDocstringFmtCfg;
-
-/* %DefaultDocstringSignature */
-typedef struct _defDocstringSigCfg {
-    int token;
-    const char *name;
-} defDocstringSigCfg;
-
-/* %DefaultEncoding */
-typedef struct _defEncodingCfg {
-    int token;
-    const char *name;
-} defEncodingCfg;
-
-/* %DefaultMetatype */
-typedef struct _defMetatypeCfg {
-    int token;
-    const char *name;
-} defMetatypeCfg;
-
-/* %DefaultSupertype */
-typedef struct _defSupertypeCfg {
-    int token;
-    const char *name;
-} defSupertypeCfg;
-
-/* %Docstring */
-typedef struct _docstringCfg {
-    int token;
-    Format format;
-    Signature signature;
-} docstringCfg;
-
-/* %Exception */
-typedef struct _exceptionCfg {
-    int token;
-    codeBlock *type_header_code;
-    codeBlock *raise_code;
-} exceptionCfg;
-
-/* %Extract */
-typedef struct _extractCfg {
-    int token;
-    const char *id;
-    int order;
-} extractCfg;
-
-/* %Feature */
-typedef struct _featureCfg {
-    int token;
-    const char *name;
-} featureCfg;
-
-/* %HiddenNamespace */
-typedef struct _hiddenNsCfg {
-    int token;
-    scopedNameDef *name;
-} hiddenNsCfg;
-
-/* %Import */
-typedef struct _importCfg {
-    int token;
-    const char *name;
-} importCfg;
-
-/* %Include */
-typedef struct _includeCfg {
-    int token;
-    const char *name;
-    int optional;
-} includeCfg;
-
-/* %License */
-typedef struct _licenseCfg {
-    int token;
-    const char *type;
-    const char *licensee;
-    const char *signature;
-    const char *timestamp;
-} licenseCfg;
-
-/* %Module and its sub-directives. */
-typedef struct _moduleCfg {
-    int token;
-    int c_module;
-    KwArgs kwargs;
-    const char *name;
-    int use_arg_names;
-    int py_ssize_t_clean;
-    int use_limited_api;
-    int all_raise_py_exc;
-    int call_super_init;
-    const char *def_error_handler;
-    docstringDef *docstring;
-} moduleCfg;
-
-/* %Plugin */
-typedef struct _pluginCfg {
-    int token;
-    const char *name;
-} pluginCfg;
-
-/* %Property */
-typedef struct _propertyCfg {
-    int token;
-    const char *get;
-    const char *name;
-    const char *set;
-    docstringDef *docstring;
-} propertyCfg;
-
-/* Variable sub-directives. */
-typedef struct _variableCfg {
-    int token;
-    codeBlock *access_code;
-    codeBlock *get_code;
-    codeBlock *set_code;
-} variableCfg;
-
-/* %VirtualErrorHandler */
-typedef struct _vehCfg {
-    int token;
-    const char *name;
-} vehCfg;
 
 #endif

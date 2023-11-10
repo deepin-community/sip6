@@ -1,4 +1,4 @@
-# Copyright (c) 2020, Riverbank Computing Limited
+# Copyright (c) 2023, Riverbank Computing Limited
 # All rights reserved.
 #
 # This copy of SIP is licensed for use under the terms of the SIP License
@@ -36,8 +36,9 @@ from ..version import SIP_VERSION_STR
 WHEEL_VERSION = '1.0'
 
 
-def distinfo(name, console_scripts, gui_scripts, generator, inventory,
-        metadata_overrides, prefix, project_root, requires_dists, wheel_tag):
+def distinfo(name, console_scripts, gui_scripts, generator, generator_version,
+        inventory, metadata_overrides, prefix, project_root, requires_dists,
+        wheel_tag):
     """ Create and populate a .dist-info directory from an inventory file. """
 
     if prefix is None:
@@ -67,16 +68,19 @@ def distinfo(name, console_scripts, gui_scripts, generator, inventory,
     # Create the directory.
     create_distinfo(name, wheel_tag, installed, metadata, requires_dists,
             project_root, console_scripts, gui_scripts, prefix_dir=prefix,
-            generator=generator)
+            generator=generator, generator_version=generator_version)
 
 
 def create_distinfo(distinfo_dir, wheel_tag, installed, metadata,
         requires_dists, project_root, console_scripts, gui_scripts,
-        prefix_dir='', generator=None):
+        prefix_dir='', generator=None, generator_version=None):
     """ Create and populate a .dist-info directory. """
 
     if generator is None:
-        generator = os.path.basename(sys.argv[0])
+        generator = 'sipbuild'
+
+    if generator_version is None:
+        generator_version = SIP_VERSION_STR
 
     # The prefix directory corresponds to DESTDIR or INSTALL_ROOT.
     real_distinfo_dir = prefix_dir + distinfo_dir
@@ -138,7 +142,7 @@ Tag: {}
 
         with open(prefix_dir + wheel_fn, 'w') as wheel_f:
             wheel_f.write(
-                    WHEEL.format(WHEEL_VERSION, generator, SIP_VERSION_STR,
+                    WHEEL.format(WHEEL_VERSION, generator, generator_version,
                             wheel_tag))
 
     # Create the METADATA file.
@@ -210,15 +214,15 @@ def write_metadata(metadata, requires_dists, metadata_fn, project_root,
     with open(prefix_dir + metadata_fn, 'w') as metadata_f:
         description = None
 
+        # Do these first for cosmetic reasons.
+        for name in ('metadata-version', 'name', 'version', 'requires-python'):
+            _write_metadata_item(name, metadata.pop(name), metadata_f)
+
         for name, value in metadata.items():
             if name == 'description-file':
                 description = value
             else:
-                if isinstance(value, str):
-                    value = [value]
-
-                for v in value:
-                    metadata_f.write('{}: {}\n'.format(name.title(), v))
+                _write_metadata_item(name, value, metadata_f)
 
         if description is not None:
             metadata_f.write('\n')
@@ -228,3 +232,13 @@ def write_metadata(metadata, requires_dists, metadata_fn, project_root,
 
             with open(os.path.join(project_root, description)) as description_f:
                 metadata_f.write(description_f.read())
+
+
+def _write_metadata_item(name, value, metadata_f):
+    """ Write a single metadata item. """
+
+    if isinstance(value, str):
+        value = [value]
+
+    for v in value:
+        metadata_f.write('{}: {}\n'.format(name.title(), v))

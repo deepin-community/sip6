@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Riverbank Computing Limited
+# Copyright (c) 2023, Riverbank Computing Limited
 # All rights reserved.
 #
 # This copy of SIP is licensed for use under the terms of the SIP License
@@ -50,8 +50,9 @@ setup(
         name='sip',
         version=version,
         license='SIP',
-        python_requires='>=3.6',
-        install_requires=['packaging', 'setuptools', 'toml'],
+        python_requires='>=3.7',
+        install_requires=['packaging', 'ply', 'setuptools',
+                'tomli;python_version<"3.11"'],
         packages=find_packages(),
         package_data={
             'sipbuild.module': ['source/*/*'],

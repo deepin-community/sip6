@@ -33,6 +33,10 @@ module.
 .B \-\-sdist
 Create an sdist which can then be installed by \fBpip\fP or uploaded
 to PyPI.
+.sp
+\fBpip\fP can also be used to create a wheel from the sdist.  However,
+for Linux wheels, \fBauditwheel\fP must be run for the wheel before it
+can be uploaded to PyPI.
 .TP
 .B \-\-setup\-cfg FILE
 \fBFILE\fP is copied to the sdist as \fBsetup.cfg\fP instead of the default

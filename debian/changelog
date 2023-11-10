@@ -1,3 +1,132 @@
+sip6 (6.7.12+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 14 Oct 2023 23:41:50 +0300
+
+sip6 (6.7.11+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Wed, 02 Aug 2023 15:10:30 +0300
+
+sip6 (6.7.10+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Document --minimum-glibc-version option in sip-wheel.1.
+  * Add sip.egg-info/entry_points.txt to debian/clean.
+  * Upload to unstable.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Mon, 24 Jul 2023 14:25:38 +0300
+
+sip6 (6.7.9+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Fri, 21 Apr 2023 21:59:43 +0300
+
+sip6 (6.7.8+dfsg-1) experimental; urgency=medium
+
+  * New upstream release.
+  * Drop python3-toml dependency, sip now uses tomllib.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 15 Apr 2023 15:55:34 +0300
+
+sip6 (6.7.7+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Drop composite_classes.diff, included in the new release.
+  * Bump copyright years.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Mon, 06 Feb 2023 17:17:11 +0400
+
+sip6 (6.7.6+dfsg-2) unstable; urgency=medium
+
+  * Backport upstream patch to fix handling of composite classes
+    (closes: #1030188).
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 02 Feb 2023 13:07:19 +0400
+
+sip6 (6.7.6+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Bump Standards-Version to 4.6.2, no changes needed.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 28 Jan 2023 22:01:05 +0400
+
+sip6 (6.7.5+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Tue, 22 Nov 2022 14:38:42 +0300
+
+sip6 (6.7.4+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 03 Nov 2022 16:48:10 +0300
+
+sip6 (6.7.3+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 29 Oct 2022 18:58:47 +0300
+
+sip6 (6.7.2+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update manpages based on command_line_tools.rst changes.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Wed, 12 Oct 2022 20:29:24 +0300
+
+sip6 (6.6.2+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Drop all upstream patches.
+  * Bump Standards-Version to 4.6.1, no changes needed.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Mon, 20 Jun 2022 15:21:25 +0300
+
+sip6 (6.6.1+dfsg-3) unstable; urgency=medium
+
+  * Backport upstream patch to fix __delattr__ handling (closes: #1011093).
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 19 May 2022 21:58:18 +0300
+
+sip6 (6.6.1+dfsg-2) unstable; urgency=medium
+
+  * Add upstream changes up to 2022-05-13 (closes: #1009939, #1010910).
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 15 May 2022 13:26:00 +0300
+
+sip6 (6.6.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Update Files-Excluded for the new release.
+  * Build-depend on python3-ply instead of bison and flex.
+  * Generate parsetab.py during build.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sat, 16 Apr 2022 16:22:05 +0300
+
+sip6 (6.5.1+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Run install with all Python versions again. dh_python3 now handles
+    presence of *.abi3.so for multiple versions correctly.
+  * Update sip-build.1 based on command_line_tools.rst change.
+  * Bump years in debian/copyright.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 03 Feb 2022 18:01:40 +0300
+
+sip6 (6.5.0+dfsg-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Add sip.egg-info/PKG-INFO to debian/clean.
+  * Run install only with the default Python version, to make sure we don’t
+    ship usr/lib/python3.10/dist-packages/sipbuild/code_generator.abi3.so.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 05 Dec 2021 17:38:54 +0300
+
 sip6 (6.4.0+dfsg-1) unstable; urgency=medium
 
   * New upstream release.

@@ -1,3 +1,1926 @@
+2023-10-10  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed a regression in the handling of multi-argument signals.
+	[2c0f7dee9327] [6.7.12] <6.7-maint>
+
+2023-10-08  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/sip.h,
+	doc/abi_12.rst, doc/abi_13.rst, sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_core.c:
+	Properly fix the Python v3.12 support by deprecating sipPyTypeDict()
+	and adding sipPyTypeDictRef(). The new ABI versions are ABI v13.6
+	and ABI v12.13.
+	[d15eee940481] <6.7-maint>
+
+	* code_generator/gencode.c, code_generator/sip.h,
+	code_generator/type_hints.c,
+	sipbuild/generator/outputs/formatters/value_list.py:
+	Some minor fixes to docstrings.
+	[2d2e5603001f] <6.7-maint>
+
+2023-10-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Minor code layout tweaks.
+	[286c85975250] <6.7-maint>
+
+	* doc/abi_12.rst, doc/abi_13.rst:
+	Updated the docs for sipPyTypeDict() clarifying that it returns a
+	new reference with Python v3.12. and later.
+	[ecae1030d1dc] <6.7-maint>
+
+	* code_generator/gencode.c:
+	Code formatting tweaks.
+	[eb5bab912533] <6.7-maint>
+
+2023-10-06  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/sip.h, code_generator/type_hints.c:
+	Fixed recursive type hints in docstrings.
+	[fdf845178576] <6.7-maint>
+
+	* NEWS, sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/outputs/type_hints.py:
+	Fixed recursive type hints in .pyi files.
+	[5a4fac10d4ad] <6.7-maint>
+
+	* sipbuild/bindings.py,
+	sipbuild/generator/outputs/formatters/utils.py,
+	sipbuild/generator/outputs/pyi.py:
+	Don't include the SIP version string in .pyi files if disabled.
+	[10856e1321c1] <6.7-maint>
+
+2023-10-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/type_hints.c:
+	Fixed the default value of standard Python objects in docstrings.
+	[c56bcb530ea0] <6.7-maint>
+
+	* code_generator/type_hints.c:
+	Additional fix for Callable.
+	[40c033c7962d] <6.7-maint>
+
+	* NEWS, code_generator/type_hints.c:
+	Fixed the arguments to Callable when it is being returned.
+	[a7b61e9cc9a3] <6.7-maint>
+
+	* code_generator/py2c.c:
+	Use separate caches when converting input and output type hints.
+	[161862b5a5b4] <6.7-maint>
+
+	* code_generator/type_hints.c:
+	Fixed the handling of implicit Optionals.
+	[ca8981aae947] <6.7-maint>
+
+2023-10-03  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Fixed some formatting inconsistencies.
+	[c89c55463182] <6.7-maint>
+
+	* code_generator/type_hints.c:
+	Fixed the docstring for callables with multiple return values.
+	[91eff5fef4da] <6.7-maint>
+
+	* code_generator/gencode.c:
+	Removed special handling to avoid '>>' for old C++ compilers.
+	[0ab5a75d770e] <6.7-maint>
+
+	* code_generator/type_hints.c, sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/outputs/type_hints.py:
+	Type hint and docstring fixes for Callable.
+	[92810408fcd8] <6.7-maint>
+
+	* code_generator/type_hints.c:
+	Remove a reference to 'typing' in docstrings.
+	[666c94c401a3] <6.7-maint>
+
+	* code_generator/type_hints.c:
+	Use 'object' and 'Any' consistently between docstrings and type
+	hints.
+	[7f4cd8a7b401] <6.7-maint>
+
+	* NEWS, code_generator/gencode.c:
+	Removed special handling to avoid '<< ::' for old C++ compilers.
+	[12f6a2a7d4b7] <6.7-maint>
+
+	* sipbuild/generator/outputs/api.py,
+	sipbuild/generator/outputs/formatters/signature.py:
+	Fixes for the generation of .api files.
+	[ee8510bcb127] <6.7-maint>
+
+2023-09-26  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/outputs/formatters/signature.py:
+	Minor improvement to the XML generation.
+	[5b3e6532c11d] <6.7-maint>
+
+2023-09-25  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Fixed the current line number after auto-generated docstrings.
+	[37bcc63db137] <6.7-maint>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed regression that stopped the code generator building.
+	[94f99572691b] <6.7-maint>
+
+2023-09-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Improved the format of some generated code.
+	[6514a35ea97b] <6.7-maint>
+
+2023-09-16  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Improved the format of some generated code.
+	[1ee69ea79641] <6.7-maint>
+
+2023-09-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Improved the format of some generated code.
+	[5b26a1960150] <6.7-maint>
+
+2023-09-14  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Improved the format of some generated code.
+	[faef556966a1] <6.7-maint>
+
+2023-09-13  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Improved the format of some generated code.
+	[36223b6185f5] <6.7-maint>
+
+2023-09-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Improved the format of some generated code.
+	[04da35a51be4] <6.7-maint>
+
+2023-09-11  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Improved the format of some generated code.
+	[dc23535afe46] <6.7-maint>
+
+2023-09-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Improved the format of some generated code.
+	[3f9702eb652a] <6.7-maint>
+
+2023-09-02  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Improved the format of some generated code.
+	[dea2afb3a2eb] <6.7-maint>
+
+2023-09-01  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Improved the format of some generated code.
+	[0f560165f3fd] <6.7-maint>
+
+2023-08-30  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/py2c.c,
+	code_generator/sip.h, doc/annotations.rst,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/specification.py:
+	Classes will automatically support being iterated over if they
+	implement '__getitem__()' or 'operator[]' and have a method
+	annotated with '__len__'.
+	[7b77587a9bb6] <6.7-maint>
+
+2023-08-29  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Improved the format of some generated code.
+	[b506cb728d9a] <6.7-maint>
+
+2023-08-02  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.11 for changeset 6bf5647a9373
+	[f877a54098d8] <6.7-maint>
+
+2023-07-31  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed a regression in the naming of ellipsis arguments.
+	[6bf5647a9373] [6.7.11] <6.7-maint>
+
+2023-07-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.10 for changeset e6fe115e5290
+	[bb88f409a993] <6.7-maint>
+
+2023-07-17  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Improved the format of calls to sipTrace().
+	[e6fe115e5290] [6.7.10] <6.7-maint>
+
+2023-07-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/type_hints.c:
+	Fixed docstrings for ellipsis arguments.
+	[42d83406162b] <6.7-maint>
+
+	* sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/parser/parser_manager.py:
+	Further fixes for ellipsys type hints.
+	[3ccadbc6f1de] <6.7-maint>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py:
+	The name of an ellipsis argument is now always 'args'.
+	[b4636fcdb515] <6.7-maint>
+
+2023-07-14  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/type_hints.c,
+	sipbuild/generator/outputs/pyi.py:
+	Fixed the use of 'Optional' in type hints.
+	[dd84cde6a8eb] <6.7-maint>
+
+2023-07-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/module/source/12/sip.pyi,
+	sipbuild/module/source/13/sip.pyi:
+	Fix the type hint for sip.voidptr.asarray().
+	[28fe369727e6] <6.7-maint>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/outputs/xml.py,
+	sipbuild/generator/python_slots.py:
+	Fixed the generation of global numeric operator functions in .pyi
+	files.
+	[4aca5521c59a] <6.7-maint>
+
+2023-07-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, sipbuild/generator/specification.py:
+	Fixed the exception handler so that it is generated when there are
+	no Python exception objecst to be created.
+	[bcaf29989c44] <6.7-maint>
+
+2023-07-05  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/sip.h, code_generator/type_hints.c:
+	Fixed the parsing of type hints as used by docstrings.
+	[ff8a0e8023b5] <6.7-maint>
+
+	* NEWS, code_generator/py2c.c:
+	Removed some unused code.
+	[e20ebe0b79b3] <6.7-maint>
+
+2023-07-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/13/sip_array.c:
+	A sip.array for a wrapped type will now be handled as an array of
+	bytes by memoryview.
+	[e3eb1dcf51dc] <6.7-maint>
+
+2023-06-22  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed a spurious code generation bug.
+	[bd5a1d2693c2] <6.7-maint>
+
+2023-06-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Some code formatting improvements.
+	[565f4d9746e7] <6.7-maint>
+
+2023-06-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Some code formatting improvements.
+	[24ccb41eeea8] <6.7-maint>
+
+2023-06-16  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip_core.c:
+	For Python v3.12 implement sipPyTypeDict() using PyType_GetDict().
+	[d36867e54192] <6.7-maint>
+
+	* NEWS, doc/abi_12.rst, doc/abi_13.rst,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_core.c:
+	sipMalloc() and sipFree() are now implemented using
+	PyMem_RawMalloc() and PyMem_RawFree() so that they should be safe to
+	call from functions registered with Py_AtExit().
+	[312476401030] <6.7-maint>
+
+2023-06-08  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, doc/command_line_tools.rst, doc/pyproject_toml.rst,
+	sipbuild/project.py:
+	Added the --minimum-glibc-version command line option to sip-wheel.
+	[88452293f4e4] <6.7-maint>
+
+2023-05-23  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/resolver/resolver.py:
+	Avoid some crashes when a class has not been defined.
+	[c7ca265b83b1] <6.7-maint>
+
+2023-04-30  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c,
+	sipbuild/generator/parser/parser_manager.py:
+	The implied setting of /NoAssignmentOperator/, /NoCopyCtor/ and
+	/NoDefaultCtor/ when /NoRelease/ is set id now implemented in the
+	parser rather than the code generator.
+	[39eb317ed4ed] <6.7-maint>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed some missing SIP_NULLPTRs.
+	[cde2bfb58cc1] <6.7-maint>
+
+2023-04-13  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.9 for changeset 60b1e38738ed
+	[91cb9fff1d42] <6.7-maint>
+
+2023-04-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Fixed the new handling of ctors with /Transfer/ annotated arguments.
+	[60b1e38738ed] [6.7.9] <6.7-maint>
+
+	* NEWS, sipbuild/module/source/12/descriptors.c,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_descriptors.c:
+	Fix the sip module to call PyObject_GC_UnTrack() in descriptor
+	dealloc functions.
+	[95f807c277e0] <6.7-maint>
+
+2023-04-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.8 for changeset fd3d08ddadc5
+	[a4fc9057db31] <6.7-maint>
+
+	* NEWS:
+	Fixed the NEWS file.
+	[fd3d08ddadc5] [6.7.8] <6.7-maint>
+
+2023-04-03  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/bindings.py,
+	sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/outputs/type_hints.py,
+	sipbuild/generator/specification.py:
+	Refactored the handling of the sip module name so that it is
+	optional in the Specification object.
+	[75acbf7d62ac] <6.7-maint>
+
+2023-03-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/toml.py:
+	Fixed the name fo the tomllib package.
+	[7864ebbddf20] <6.7-maint>
+
+	* NEWS, setup.py, sipbuild/bindings_configuration.py,
+	sipbuild/distinfo/distinfo.py, sipbuild/pyproject.py,
+	sipbuild/toml.py:
+	Replaced toml with the standard library tomlib or tomli as
+	appropriate.
+	[df52c30655be] <6.7-maint>
+
+	* NEWS, doc/pyproject_toml.rst, sipbuild/builder.py,
+	sipbuild/project.py:
+	Add support for absolute patterns in wheel-includes.
+	[d9d0cfa658ff] <6.7-maint>
+
+2023-02-28  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_core.c:
+	Fixed the handling of a mapped type ctor argument that has
+	/Transfer/ specified so that it is consistent with the handling of a
+	similar method argument.
+	[5bf93a9d2853] <6.7-maint>
+
+2023-02-27  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Fixed the generation of enum comparison slots so that unsupported
+	types are reported as not implemented.
+	[ccc47507cbda] <6.7-maint>
+
+	* NEWS, sipbuild/generator/resolver/resolver.py:
+	Skip some resolver checks for undefined classes.
+	[290d789a402d] <6.7-maint>
+
+2023-02-24  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/13/sip_array.c:
+	Fixed sip.array subscripts.
+	[f29fca0a7e1a] <6.7-maint>
+
+2023-02-23  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_array.c:
+	Fixed the buffer protocol support for sip.array.
+	[c10c9021aea6] <6.7-maint>
+
+2023-02-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.7 for changeset 2d5cad50e879
+	[459db7463ed5] <6.7-maint>
+
+	* sipbuild/generator/outputs/pyi.py:
+	In .pyi files generate implict imports as well as explicit imports.
+	[2d5cad50e879] [6.7.7] <6.7-maint>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py:
+	Fixed the 'pyqtsignal' typo in generated .pyi files.
+	[48117db2851d] <6.7-maint>
+
+2023-02-02  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/outputs/type_hints.py:
+	Use the standard Sphinx directive to reference voidptr.
+	[2c334836f75f] <6.7-maint>
+
+2023-02-01  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/type_hints.py,
+	sipbuild/generator/outputs/xml.py:
+	Ensure voidptr is rendered consistently and as a reST reference
+	where appropriate.
+	[3b892deb8c1b] <6.7-maint>
+
+	* sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/formatters/value_list.py,
+	sipbuild/generator/outputs/xml.py:
+	Changes to the XML generation to reduce differences to earlier
+	versions.
+	[41dc32eadb62] <6.7-maint>
+
+2023-01-31  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/py2c.c,
+	code_generator/sip.h, sipbuild/bindings.py,
+	sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/specification.py:
+	Refactored the handling of composite classes so that they are
+	populated properly.
+	[0afab92347b6] <6.7-maint>
+
+2023-01-28  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/outputs/xml.py:
+	Fixes for regressions in the XML generation.
+	[77ebbacae72e] <6.7-maint>
+
+	* NEWS, sipbuild/generator/parser/parser.py:
+	Fixed an incorrect API comment.
+	[febcfb71804d] <6.7-maint>
+
+2023-01-25  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.6 for changeset 67273f43bdbf
+	[fe69fc6295b7] <6.7-maint>
+
+	* NEWS, code_generator/py2c.c:
+	Reduce the use of the heap when converting from Python to C data
+	structures.
+	[67273f43bdbf] [6.7.6] <6.7-maint>
+
+2023-01-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Fixed a regression so that enums are not registered if there is no
+	meta-object.
+	[f4ccf3303e59] <6.7-maint>
+
+	* NEWS, code_generator/gencode.c:
+	Ensure that all enums (including global enums) are registered with
+	Qt so that they can be used in queued connections.
+	[259096e57fd7] <6.7-maint>
+
+2022-12-16  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_core.c:
+	Fixed the implementation of /Transfer/ for global functions in ABI
+	v13.
+	[bc56c45dd235] <6.7-maint>
+
+2022-12-14  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c:
+	In API v12 prevent an attempt to sub-class from an enum. The API
+	version number is now v12.11.1.
+	[91cda197b6ca] <6.7-maint>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py:
+	Fixed type hints when a signal is overloaded with a method.
+	[6343b9aeceb9] <6.7-maint>
+
+2022-12-13  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py:
+	Fixed the .pyi file for enums with no members.
+	[b828fb046720] <6.7-maint>
+
+2022-12-05  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py:
+	Fixed the representation of Qt signals in the .pyi files.
+	[ba2933733f6c] <6.7-maint>
+
+2022-11-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c, code_generator/py2c.c,
+	code_generator/sip.h, sipbuild/bindings.py,
+	sipbuild/generator/outputs/api.py,
+	sipbuild/generator/outputs/pyi.py,
+	sipbuild/generator/outputs/xml.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/resolver/resolver.py,
+	sipbuild/generator/specification.py:
+	Re-factored Specification so that it just has the module that code
+	will be generated for rather than a list of all modules.
+	[be55cf9e3e79] <6.7-maint>
+
+2022-11-19  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.5 for changeset 43c1391748cf
+	[bc0278714cdd] <6.7-maint>
+
+2022-11-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/outputs/extracts.py:
+	Fixed extracts when the extract file name contains a Windows disk
+	specifier.
+	[43c1391748cf] [6.7.5] <6.7-maint>
+
+2022-11-03  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.4 for changeset 2157850bf018
+	[7b7a870a7d35] <6.7-maint>
+
+2022-10-29  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py:
+	Fixed a regression in the handling of type hints for properties.
+	[2157850bf018] [6.7.4] <6.7-maint>
+
+2022-10-28  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.3 for changeset ea12891e29e2
+	[912db062d8c7] <6.7-maint>
+
+2022-10-27  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/outputs/pyi.py:
+	Fixed the .pyi file __eq__ and __ne__ entries.
+	[ea12891e29e2] [6.7.3] <6.7-maint>
+
+	* NEWS, sipbuild/generator/outputs/pyi.py:
+	Added the Python .pyi code to the repo.
+	[1246f197548e] <6.7-maint>
+
+	* sipbuild/generator/outputs/type_hints.py:
+	Brackets are allowed in non-typing module type hints.
+	[b0f99d3165dc] <6.7-maint>
+
+	* code_generator/gencode.c, code_generator/sip.h,
+	code_generator/type_hints.c:
+	Stripped out redundant C code.
+	[4dedf2303b4a] <6.7-maint>
+
+	* sipbuild/generator/outputs/type_hints.py:
+	Completed the Python implementation of type hints.
+	[ce9d2cb4dc51] <6.7-maint>
+
+	* sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/formatters/enum.py,
+	sipbuild/generator/outputs/formatters/klass.py,
+	sipbuild/generator/outputs/formatters/utils.py,
+	sipbuild/generator/outputs/type_hints.py:
+	Debugging of new type hint code.
+	[1756cefda6bb] <6.7-maint>
+
+2022-10-25  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/pybinding.c, sipbuild/bindings.py,
+	sipbuild/generator/outputs/__init__.py,
+	sipbuild/generator/outputs/api.py,
+	sipbuild/generator/outputs/formatters/__init__.py,
+	sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/formatters/enum.py,
+	sipbuild/generator/outputs/formatters/klass.py,
+	sipbuild/generator/outputs/formatters/signature.py,
+	sipbuild/generator/outputs/formatters/utils.py,
+	sipbuild/generator/outputs/formatters/value_list.py,
+	sipbuild/generator/outputs/formatters/variable.py,
+	sipbuild/generator/outputs/type_hints.py,
+	sipbuild/generator/outputs/xml.py,
+	sipbuild/generator/parser/parser.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/specification.py:
+	Initial re-implementation of the .pyi file generation in Python.
+	[f81ba5225472] <6.7-maint>
+
+2022-10-23  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/py2c.c:
+	Removed a couple of unused conversion functions.
+	[62dfbdfe52f8] <6.7-maint>
+
+	* code_generator/py2c.c:
+	Fixed a regression in the convertion of type hints to C.
+	[d5c985671fc1] <6.7-maint>
+
+	* sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/formatters/signature.py,
+	sipbuild/generator/outputs/formatters/template.py,
+	sipbuild/generator/outputs/xml.py:
+	Fixes to the XML output.
+	[11942a8be37d] <6.7-maint>
+
+	* code_generator/py2c.c:
+	Fixed a regression in the converting of type hints to C.
+	[464398062a62] <6.7-maint>
+
+	* code_generator/py2c.c, sipbuild/generator/formatters/__init__.py,
+	sipbuild/generator/formatters/argument.py,
+	sipbuild/generator/formatters/base_formatter.py,
+	sipbuild/generator/formatters/enum.py,
+	sipbuild/generator/formatters/klass.py,
+	sipbuild/generator/formatters/overload.py,
+	sipbuild/generator/formatters/scoped.py,
+	sipbuild/generator/formatters/signature.py,
+	sipbuild/generator/formatters/template.py,
+	sipbuild/generator/formatters/utils.py,
+	sipbuild/generator/formatters/value_list.py,
+	sipbuild/generator/formatters/variable.py,
+	sipbuild/generator/instantiations.py,
+	sipbuild/generator/outputs/api.py,
+	sipbuild/generator/outputs/formatters/__init__.py,
+	sipbuild/generator/outputs/formatters/argument.py,
+	sipbuild/generator/outputs/formatters/base_formatter.py,
+	sipbuild/generator/outputs/formatters/enum.py,
+	sipbuild/generator/outputs/formatters/klass.py,
+	sipbuild/generator/outputs/formatters/overload.py,
+	sipbuild/generator/outputs/formatters/scoped.py,
+	sipbuild/generator/outputs/formatters/signature.py,
+	sipbuild/generator/outputs/formatters/template.py,
+	sipbuild/generator/outputs/formatters/utils.py,
+	sipbuild/generator/outputs/formatters/value_list.py,
+	sipbuild/generator/outputs/formatters/variable.py,
+	sipbuild/generator/outputs/type_hints.py,
+	sipbuild/generator/outputs/xml.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/specification.py,
+	sipbuild/generator/type_hints.py:
+	Refactoring based on a type hint just being an optional string.
+	[fb794ebfa872] <6.7-maint>
+
+	* NEWS, sipbuild/generator/outputs/xml.py:
+	The XML is now generated as an etree root node rather than an XML
+	file.
+	[9b31d8115ad0] <6.7-maint>
+
+2022-10-22  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/type_hints.py:
+	Completed the Python implementation of the XML generation.
+	[59c9a1dcd3dc] <6.7-maint>
+
+	* sipbuild/generator/type_hints.py:
+	Fixed the parsing of type hints for class enums defined with Python
+	scopes.
+	[46dfc03ef680] <6.7-maint>
+
+	* sipbuild/generator/type_hints.py:
+	Fixed the parsing of mapped type type hints.
+	[990804c44eec] <6.7-maint>
+
+	* sipbuild/generator/formatters/value_list.py,
+	sipbuild/generator/type_hints.py:
+	Debugging of XML generation.
+	[888053404043] <6.7-maint>
+
+	* code_generator/export.c, code_generator/pybinding.c,
+	code_generator/sip.h, sipbuild/generator/formatters/__init__.py,
+	sipbuild/generator/formatters/argument.py,
+	sipbuild/generator/formatters/enum.py,
+	sipbuild/generator/formatters/klass.py,
+	sipbuild/generator/formatters/signature.py,
+	sipbuild/generator/formatters/template.py,
+	sipbuild/generator/formatters/utils.py,
+	sipbuild/generator/formatters/value_list.py,
+	sipbuild/generator/outputs/xml.py,
+	sipbuild/generator/resolver/resolver.py,
+	sipbuild/generator/type_hints.py:
+	Completed the Python implementation of the XML generation.
+	[492f413d83bf] <6.7-maint>
+
+2022-10-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* Merged the latest maint branch changes.
+	[c014ebe8e7f2] <6.7-maint>
+
+2022-10-18  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/formatters/argument.py,
+	sipbuild/generator/formatters/enum.py,
+	sipbuild/generator/formatters/klass.py,
+	sipbuild/generator/formatters/utils.py,
+	sipbuild/generator/formatters/value_list.py,
+	sipbuild/generator/formatters/variable.py,
+	sipbuild/generator/instantiations.py,
+	sipbuild/generator/outputs/xml.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/type_hints.py:
+	Reimplemented enough of the XML output to represent a type.
+	[c9313bf161cb] <6.7-maint>
+
+2022-10-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/resolver/resolver.py:
+	Fixed a bug when logging resolver errors in overloads.
+	[3b317b873f00] <6.7-maint>
+
+2022-10-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.2 for changeset 02e1e42540d2
+	[b359afe150b3] <6.7-maint>
+
+	* NEWS, sipbuild/bindings.py, sipbuild/generator/__init__.py,
+	sipbuild/generator/api.py, sipbuild/generator/extracts.py,
+	sipbuild/generator/outputs/__init__.py,
+	sipbuild/generator/outputs/api.py,
+	sipbuild/generator/outputs/extracts.py:
+	Refactored the structure to create the outputs module.
+	[02e1e42540d2] [6.7.2] <6.7-maint>
+
+2022-10-11  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/formatters/argument.py,
+	sipbuild/generator/formatters/value_list.py:
+	The Python .api generation now produces the same results as the old
+	C++ code.
+	[ad82b2aa8dc6] <6.7-maint>
+
+	* code_generator/py2c.c, sipbuild/generator/api.py,
+	sipbuild/generator/formatters/enum.py,
+	sipbuild/generator/formatters/signature.py,
+	sipbuild/generator/resolver/resolver.py,
+	sipbuild/generator/specification.py:
+	.api file generation debugging.
+	[b0ea0a9e1778] <6.7-maint>
+
+2022-10-10  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/export.c, code_generator/pybinding.c,
+	code_generator/sip.h, sipbuild/bindings.py,
+	sipbuild/generator/__init__.py, sipbuild/generator/api.py,
+	sipbuild/generator/formatters/__init__.py,
+	sipbuild/generator/formatters/argument.py,
+	sipbuild/generator/formatters/base_formatter.py,
+	sipbuild/generator/formatters/enum.py,
+	sipbuild/generator/formatters/klass.py,
+	sipbuild/generator/formatters/overload.py,
+	sipbuild/generator/formatters/scoped.py,
+	sipbuild/generator/formatters/signature.py,
+	sipbuild/generator/formatters/template.py,
+	sipbuild/generator/formatters/utils.py,
+	sipbuild/generator/formatters/value_list.py,
+	sipbuild/generator/formatters/variable.py,
+	sipbuild/generator/instantiations.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/resolver/resolver.py,
+	sipbuild/generator/scoped_name.py,
+	sipbuild/generator/specification.py,
+	sipbuild/generator/templates.py, sipbuild/generator/utils.py:
+	Initial commit of the Python implementation of generaing .api files.
+	[96337dcf3e8b] <6.7-maint>
+
+2022-10-08  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/formatters.py,
+	sipbuild/generator/formatters/__init__.py,
+	sipbuild/generator/formatters/overload.py,
+	sipbuild/generator/resolver/resolver.py:
+	Established a pattern for class-based object formatters.
+	[9a39cf1e6db3] <6.7-maint>
+
+	* NEWS, sipbuild/generator/instantiations.py:
+	Fixed a regression in instantiating class templates.
+	[b0e2b0ed6c9b] <6.7-maint>
+
+2022-10-05  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/extracts.c, code_generator/py2c.c,
+	code_generator/pybinding.c, code_generator/sip.h,
+	sipbuild/bindings.py, sipbuild/generator/__init__.py,
+	sipbuild/generator/extracts.py, sipbuild/generator/parser/rules.py,
+	sipbuild/generator/specification.py:
+	Reimplemented the extract generation in Python.
+	[de0b9e98e873] <6.7-maint>
+
+	* NEWS, code_generator/py2c.c, sipbuild/generator/parser/rules.py,
+	sipbuild/generator/resolver/resolver.py:
+	Fixed regressions in the handling of exceptions.
+	[d4dd66fa41dc] <6.7-maint>
+
+	* .hgtags:
+	Added tag 6.7.1 for changeset 2501905ff633
+	[9ad397433a04] <6.7-maint>
+
+	* NEWS, sipbuild/generator/utils.py:
+	Fixed the use of zip() for versions of Python earlier than v3.10.
+	[2501905ff633] [6.7.1] <6.7-maint>
+
+2022-09-30  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.7.0 for changeset 912dd627e03a
+	[1a0a5004f7c8]
+
+2022-09-17  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* doc/command_line_tools.rst:
+	Documented the need of using auditwheel.
+	[912dd627e03a] [6.7.0]
+
+	* code_generator/pybinding.c, code_generator/sip.h:
+	Completed the refactoring of the error handling to remove the use of
+	setjmp and longjmp and remove the dependency on GLIBC v2.11.
+	[8f791a75e396]
+
+	* code_generator/gencode.c:
+	Completed the refactoring of the code generator error handling.
+	[11a5c2d4cc4b]
+
+	* code_generator/gencode.c:
+	Refactoring of the code generator error handling.
+	[e39fcbb30a02]
+
+	* code_generator/gencode.c:
+	Refactoring of the code generator error handling.
+	[d60a924520d2]
+
+	* code_generator/gencode.c, code_generator/pybinding.c:
+	Refactoring of the code generator error handling.
+	[3bd1793da8ef]
+
+	* code_generator/extracts.c, code_generator/pybinding.c,
+	code_generator/sip.h:
+	Refactored the error handling of the generation of extracts.
+	[82b7cc969fe5]
+
+	* code_generator/export.c, code_generator/pybinding.c,
+	code_generator/sip.h, code_generator/type_hints.c:
+	Refactored the error handling of the API and XML exports.
+	[9aaed4513d1c]
+
+	* code_generator/heap.c, code_generator/py2c.c:
+	Permanenly enable assertions as we are using them for error
+	checking.
+	[9c97f1dddaef]
+
+	* code_generator/heap.c:
+	Use assertions when checking heap allocations rather than an error
+	message.
+	[3d82c0c55516]
+
+	* code_generator/gencode.c, code_generator/pybinding.c,
+	code_generator/sip.h:
+	Begin refactoring of the error handling in the remaining C code.
+	[23c334470ade]
+
+	* NEWS, sipbuild/module/source/13/setup.cfg.in:
+	Removed some unused lines from setup.cfg for ABI v13.
+	[b061c6084413]
+
+2022-09-08  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/project.py:
+	Ensure the minimum macOS version fro arm64-only wheels is 11.0.
+	[3808f68364b2]
+
+2022-09-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c, sipbuild/module/source/13/sip_core.c:
+	Minor fixes to avoid (benign) warning messages in generated code.
+	[8783ab8cbe77]
+
+	* sipbuild/generator/resolver/resolver.py:
+	Fixed the handling of PyQtFlags by mapped type templates.
+	[25b3255a616a]
+
+	* code_generator/gencode.c, code_generator/py2c.c,
+	code_generator/pybinding.c, code_generator/sip.h:
+	Removed various unused code and declarations.
+	[a9467f2f1141]
+
+	* code_generator/export.c, code_generator/gencode.c,
+	code_generator/py2c.c, code_generator/sip.h,
+	code_generator/type_hints.c:
+	Some refactoring to reduce the interdependencies between the
+	remaining C code.
+	[3063bd07ef60]
+
+	* NEWS, code_generator/gencode.c, code_generator/py2c.c,
+	code_generator/pybinding.c, code_generator/sip.h,
+	code_generator/transform.c, sipbuild/bindings.py,
+	sipbuild/generator/__init__.py, sipbuild/generator/error_log.py,
+	sipbuild/generator/formatters.py,
+	sipbuild/generator/instantiations.py,
+	sipbuild/generator/parser/instantiations.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/python_slots.py,
+	sipbuild/generator/resolver/__init__.py,
+	sipbuild/generator/resolver/resolver.py,
+	sipbuild/generator/specification.py,
+	sipbuild/generator/templates.py, sipbuild/generator/type_hints.py,
+	sipbuild/generator/utils.py:
+	The resolver/transform stage has been replaced by a pure Python
+	implementation.
+	[5c719e369a1f]
+
+2022-08-26  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py:
+	Fixed the parsing of type hints.
+	[3ec2ad2e0271]
+
+2022-08-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/project.py:
+	More manylinux fixes.
+	[baee960066f8]
+
+	* sipbuild/project.py:
+	Use PEP 600 naming for all GLIBC versions.
+	[c642dc1d9604]
+
+	* sipbuild/project.py:
+	Fixed a silly typo.
+	[4870dcdf8693]
+
+	* NEWS, sipbuild/project.py:
+	Fixed the manylinux wheel tags.
+	[94c7e1b37622]
+
+2022-08-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/py2c.c,
+	code_generator/sip.h, doc/annotations.rst,
+	sipbuild/generator/parser/annotations.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/specification.py:
+	Implemented the /NoAssignmentOperator/, /NoCopyCtor/ and
+	/NoDefaultCtor/ mapped type annotations.
+	[3b461c650c5d]
+
+2022-07-30  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/export.c, code_generator/gencode.c,
+	code_generator/py2c.c, code_generator/sip.h,
+	code_generator/transform.c, code_generator/type_hints.c:
+	Refactoring of the C code in preparation for porting transform.c to
+	Python.
+	[8cbf7e165abf]
+
+2022-07-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Clarified why PyQt6 registers the meta-types of C++ enums.
+	[f968c5305258]
+
+2022-07-19  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, doc/command_line_tools.rst, doc/sipbuild_api.rst,
+	sipbuild/distinfo/distinfo.py, sipbuild/distinfo/main.py,
+	sipbuild/project.py:
+	Added the --generator-version command line option to sip-distinfo.
+	Added the 'generator_version' argument to
+	Project.get_sip_distinfo_command_line(). Generator names now
+	correspond to the backend rather than the frontend.
+	[5eabdad318b3]
+
+	* Merged the 6.6-maint branch.
+	[7bf316872fc4]
+
+2022-07-17  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/instantiations.py:
+	Fixed the instantiation of template values.
+	[323d39a2d602] <6.6-maint>
+
+2022-06-26  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/rules.py:
+	Fixed the handling of exceptions that sub-class C++ exceptions.
+	[1430b279a3c9] <6.6-maint>
+
+2022-06-17  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.6.2 for changeset a3c9672f761a
+	[6eff81a15822] <6.6-maint>
+
+2022-06-06  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/tokens.py:
+	Allow a single underscore to be used as a name.
+	[a3c9672f761a] [6.6.2] <6.6-maint>
+
+	* sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed a regresssion introduced when fixing class template super-
+	classes.
+	[73d165da863c] <6.6-maint>
+
+	* NEWS, sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py:
+	Allow empty class definitions.
+	[c5c9c0d486e8] <6.6-maint>
+
+2022-06-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed the handling of parameterised super-classes in class
+	templates.
+	[2e27e3f6de19] <6.6-maint>
+
+2022-06-02  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/13/sip_array.c:
+	Fixed the testing for a sip.array.
+	[996537068490] <6.6-maint>
+
+2022-05-26  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/13/sip_array.c:
+	Fixed the regression introduced in the previous fix for non-MSVC
+	compilers.
+	[cc71b80f6f9d] <6.6-maint>
+
+	* sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/13/sip_array.c:
+	Fixed building the array support with MSVC.
+	[e9a6b015c006] <6.6-maint>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py:
+	Fixed the check for duplicate attributes when adding a new class.
+	[ca2ae8f4a270] <6.6-maint>
+
+2022-05-24  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/rules.py:
+	Fixed the parsing of %Extract.
+	[3ed64d65df0a] <6.6-maint>
+
+2022-05-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/sip.h,
+	code_generator/type_hints.c, doc/abi_12.rst, doc/abi_13.rst,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/sip.rst.in,
+	sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/12/sip_array.h,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip.rst.in,
+	sipbuild/module/source/13/sip_array.c,
+	sipbuild/module/source/13/sip_array.h,
+	sipbuild/module/source/13/sip_core.c:
+	Arguments using the /Array/ (and /ArraySize/) annotations will now
+	accept 'array' objects of the corresponding type.
+	[bc3852498daf] <6.6-maint>
+
+2022-05-18  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/type_hints.c:
+	Fix the type hints when /Array/ is used.
+	[3f1499be3dab] <6.6-maint>
+
+2022-05-17  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Ensure '__delattr__' is included in generated code if it is needed.
+	[a5601579b8ad] <6.6-maint>
+
+	* sipbuild/module/source/13/sip_enum.c:
+	Fixed missing IntEnum members so that they behave like ints.
+	[42307cec38ed] <6.6-maint>
+
+	* code_generator/gencode.c:
+	Added a missing SIP_NULLPTR.
+	[80adeaa4086a] <6.6-maint>
+
+	* NEWS, code_generator/gencode.c, code_generator/sip.h,
+	sipbuild/module/source/12/array.c,
+	sipbuild/module/source/12/array.h,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/sip_array.c,
+	sipbuild/module/source/12/sip_array.h,
+	sipbuild/module/source/12/sipint.h,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/12/voidptr.c:
+	Added to sip.array functionality to the v12 ABI.
+	[5ad8a12445a8] <6.6-maint>
+
+2022-05-16  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/sip.h,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_array.c,
+	sipbuild/module/source/13/sip_core.c,
+	sipbuild/module/source/13/sip_core.h,
+	sipbuild/module/source/13/sip_voidptr.c:
+	The ABI v13 'array' can now create one dimensional arrays of wrapped
+	types that can be modified in situ.
+	[8e01bcf5791c] <6.6-maint>
+
+	* code_generator/gencode.c:
+	Fix the target minor ABI version in the exported module definition.
+	[5ae6a70f1793] <6.6-maint>
+
+	* NEWS, sipbuild/module/source/13/MANIFEST.in,
+	sipbuild/module/source/13/array.c,
+	sipbuild/module/source/13/array.h,
+	sipbuild/module/source/13/bool.cpp,
+	sipbuild/module/source/13/descriptors.c,
+	sipbuild/module/source/13/int_convertors.c,
+	sipbuild/module/source/13/objmap.c,
+	sipbuild/module/source/13/setup.py.in,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/sip_array.c,
+	sipbuild/module/source/13/sip_array.h,
+	sipbuild/module/source/13/sip_bool.cpp,
+	sipbuild/module/source/13/sip_core.c,
+	sipbuild/module/source/13/sip_core.h,
+	sipbuild/module/source/13/sip_descriptors.c,
+	sipbuild/module/source/13/sip_enum.c,
+	sipbuild/module/source/13/sip_enum.h,
+	sipbuild/module/source/13/sip_int_convertors.c,
+	sipbuild/module/source/13/sip_object_map.c,
+	sipbuild/module/source/13/sip_threads.c,
+	sipbuild/module/source/13/sip_voidptr.c,
+	sipbuild/module/source/13/sipint.h,
+	sipbuild/module/source/13/siplib.c,
+	sipbuild/module/source/13/threads.c,
+	sipbuild/module/source/13/voidptr.c:
+	More cosmetic refactoring of the v13 sip module.
+	[1a574bc518b7] <6.6-maint>
+
+2022-05-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/13/sip_enum.c:
+	Completed the initial implementation (using monkey patching) of
+	creating pseudo-members of an enum when converting an unexpected
+	value.
+	[89a096622e10] <6.6-maint>
+
+	* sipbuild/module/source/12/apiversions.c,
+	sipbuild/module/source/12/array.c,
+	sipbuild/module/source/12/array.h,
+	sipbuild/module/source/12/descriptors.c,
+	sipbuild/module/source/12/int_convertors.c,
+	sipbuild/module/source/12/qtlib.c,
+	sipbuild/module/source/12/sipint.h,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/12/voidptr.c,
+	sipbuild/module/source/13/array.c,
+	sipbuild/module/source/13/array.h,
+	sipbuild/module/source/13/descriptors.c,
+	sipbuild/module/source/13/int_convertors.c,
+	sipbuild/module/source/13/sip_enum.c,
+	sipbuild/module/source/13/sip_enum.h,
+	sipbuild/module/source/13/sipint.h,
+	sipbuild/module/source/13/siplib.c,
+	sipbuild/module/source/13/voidptr.c:
+	Added '#define PY_SSIZE_T_CLEAN' to the sip module implementation.
+	[f6ba13f072ad] <6.6-maint>
+
+	* sipbuild/module/source/13/sip_enum.c,
+	sipbuild/module/source/13/sip_enum.h,
+	sipbuild/module/source/13/sipint.h,
+	sipbuild/module/source/13/siplib.c:
+	Refactored the enum support.
+	[b7acdfcf60b2] <6.6-maint>
+
+2022-05-13  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed a bug in the handling of protected enums when protected is not
+	public.
+	[a59cb21d25c6] <6.6-maint>
+
+2022-05-11  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/rules.py:
+	Fixed the handling of the body of a %Module directive.
+	[26df26ef49ed] <6.6-maint>
+
+2022-05-10  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/api.py:
+	Fixed the PEP571 backend to handle multiple instances of the same
+	config setting.
+	[8543f04b374f] <6.6-maint>
+
+2022-05-08  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed the parser so that the module state isn't restored too soon.
+	[b8ef6009a33f] <6.6-maint>
+
+2022-05-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/abstract_project.py, sipbuild/project.py:
+	Fix an API backward incompatibility.
+	[c02af095a016] <6.6-maint>
+
+	* NEWS, doc/sipbuild_api.rst, sipbuild/abstract_project.py,
+	sipbuild/api.py, sipbuild/configurable.py, sipbuild/project.py:
+	Any config settings passed by a PEP 571 frontend are now used.
+	[98dbce3e62f1] <6.6-maint>
+
+2022-05-05  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c:
+	Tweak the code generated for catching exceptions so that is matches
+	older SIP versions.
+	[9aab6c0a90e8] <6.6-maint>
+
+	* NEWS, code_generator/py2c.c,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/tokens.py,
+	sipbuild/generator/templates.py:
+	Fixes to ensure that generated #line directives match older versions
+	of SIP.
+	[f786066435f6] <6.6-maint>
+
+2022-05-04  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/type_hints.c:
+	Fix type hints fro __eq__ and __ne__.
+	[12c0dbdc168f] <6.6-maint>
+
+2022-05-03  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/type_hints.c:
+	Some type hint fixes.
+	[7c2c5b1a6ef7] <6.6-maint>
+
+	* NEWS, sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/siplib.c:
+	The sip modules now publish the 'array' type object.
+	[5c841d9cc66d] <6.6-maint>
+
+	* sipbuild/module/source/12/sip.pyi,
+	sipbuild/module/source/13/sip.pyi:
+	Fixes for the sip.pyi stub files.
+	[1e11216c352f] <6.6-maint>
+
+2022-05-02  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/tokens.py:
+	Fixed indented directives.
+	[3d656f0765f5] <6.6-maint>
+
+	* sipbuild/generator/parser/annotations.py:
+	More DottedName changes.
+	[c179f418c5be] <6.6-maint>
+
+	* sipbuild/generator/parser/tokens.py:
+	Fix DRY in the lexer.
+	[f97139203fac] <6.6-maint>
+
+	* sipbuild/generator/parser/annotations.py,
+	sipbuild/generator/parser/rules.py:
+	Simplify DottedName.
+	[1fb3e76bc14e] <6.6-maint>
+
+	* sipbuild/generator/parser/rules.py:
+	Added support for PyObject* as a synonym for SIP_PYOBJECT.
+	[943031bdd427] <6.6-maint>
+
+	* sipbuild/generator/parser/instantiations.py:
+	Fixes for class template instantiation.
+	[6a535de19197] <6.6-maint>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py:
+	Fixed the handling of %Exception.
+	[5199c7d0fc7c] <6.6-maint>
+
+2022-04-30  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/parser/tokens.py:
+	More parser fixes to properly handle file paths.
+	[8886d0bfb4ec] <6.6-maint>
+
+2022-04-29  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/parser/tokens.py:
+	Fixed the parsing of file paths to match the old C implementation.
+	[5a0c61e32427] <6.6-maint>
+
+2022-04-28  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/parser/tokens.py:
+	More fixes for parsing '..'.
+	[8610dc6cc7d4] <6.6-maint>
+
+	* sipbuild/generator/parser/rules.py:
+	Fixed the parsing of '.' and '..' in path names.
+	[8fd196a3525e] <6.6-maint>
+
+	* NEWS, sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed the parsing of class templates within a class. Fixed the
+	parsing of class docstrings.
+	[0a61ae7058e8] <6.6-maint>
+
+2022-04-27  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parsetab.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed the parsing of %Property.
+	[6e9505ded378] <6.6-maint>
+
+2022-04-26  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/instantiations.py,
+	sipbuild/generator/specification.py:
+	More minor bug fixes.
+	[a069205270ea] <6.6-maint>
+
+2022-04-25  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/bindings.py, sipbuild/buildable.py, sipbuild/builder.py,
+	sipbuild/distutils_builder.py,
+	sipbuild/generator/parser/instantiations.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/specification.py,
+	sipbuild/generator/templates.py, sipbuild/project.py,
+	sipbuild/pyproject.py, sipbuild/setuptools_builder.py:
+	Various fixes identified by pyflakes.
+	[0da96769835f] <6.6-maint>
+
+	* NEWS, sipbuild/generator/parser/rules.py:
+	Fixed an attribute mis-naming in the parsing of exceptions.
+	[d43fc89f7ef2] <6.6-maint>
+
+2022-04-13  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.6.1 for changeset c5a7b5a9c931
+	[a6d2d9673442] <6.6-maint>
+
+	* setup.cfg:
+	Fixed the limited API version specified in the metadata of SIP
+	itself.
+	[c5a7b5a9c931] [6.6.1] <6.6-maint>
+
+	* NEWS, sipbuild/module/source/12/setup.py.in,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/13/setup.py.in,
+	sipbuild/module/source/13/sip.h.in:
+	Fixed the required Python version in the metadata of the sip module.
+	[968567d2e6ae] <6.6-maint>
+
+2022-04-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.6.0 for changeset a6cf18767583
+	[2744713df639]
+
+2022-04-01  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, doc/pyproject_toml.rst:
+	Improved the documentation for the project-factory entry in
+	pyproject.toml.
+	[a6cf18767583] [6.6.0]
+
+2022-03-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/parser_manager.py:
+	Allow a qualifier to be defined in multiple %Timelines.
+	[13d317321f1d]
+
+2022-03-10  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c:
+	Fixed the use of PyFrameObject in Python v3.8 and earlier.
+	[5565e9919898]
+
+	* sipbuild/buildable.py:
+	Use the oldest support version when specifiying Py_LIMITED_API.
+	[0c933ec3203d]
+
+	* NEWS, code_generator/py2c.c, code_generator/pybinding.c, setup.py:
+	Remove remaining references to Python v3.6 and before.
+	[3c95a48a330b]
+
+2022-03-09  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, doc/abi_12.rst, doc/abi_13.rst, doc/introduction.rst,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/siplib.c, sipbuild/py_versions.py:
+	Removed support for Python v3.6.
+	[c0c3f9a7fd4e]
+
+2022-03-08  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/generator/parser/rules.py:
+	Fixed the requirement for a shadow class from a virtual method.
+	[ff6e067d2ad6]
+
+2022-03-03  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/type_hints.c:
+	Don't ignore any standard dunder methods in type hints.
+	[5c78c5331397]
+
+2022-02-27  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in:
+	Removed some legacy comments.
+	[788d855c8e26]
+
+	* code_generator/gencode.c, sipbuild/project.py:
+	Fix the sip module ABI that is requested by the generated code.
+	[f371ee533c22]
+
+	* code_generator/py2c.c:
+	Fixed the conversion from interface files from Python to C.
+	[70f6457989b1]
+
+	* NEWS, sipbuild/generator/utils.py:
+	Fixed the normalisation of scoped names when looking up within a
+	scope.
+	[e219fa4ccf5f]
+
+2022-02-26  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/transform.c:
+	Fixed the comparision of enum members when using ABI v12 and there
+	is an explicit equality operator defined.
+	[678bf18547b7]
+
+2022-02-22  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS:
+	Updated the NEWS file.
+	[e697a0f87540]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the handling of user state for mapped types.
+	[ce6d11a6d298]
+
+	* sipbuild/generator/parser/parsetab.py:
+	Added the PLY generated parser table to the repository.
+	[dee77c9cf98f]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the automatic renaming for Python keywords.
+	[0faf5baa8d6f]
+
+2022-02-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/tokens.py:
+	Fixed the lexing of single-quoted hex characters.
+	[db6460ae77a3]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Removed some annotations checks to maintain compatibility with the
+	old parser.
+	[eb92cc4567f7]
+
+	* sipbuild/generator/specification.py:
+	Fixed the definition of a mapped type's %ReleaseCode.
+	[fc8b8d87ff30]
+
+	* sipbuild/generator/parser/rules.py,
+	sipbuild/generator/parser/tokens.py:
+	Prevent the lexer from looking too far ahead when switching between
+	files.
+	[b43c227aa0a5]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the the list of modules that a module imports.
+	[6f5d1b658c67]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the handling of operators defined in namespaces.
+	[53364527a08e]
+
+2022-02-19  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the handling of protected enums.
+	[bab3f946f8f7]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the handling of the bindings configuration file.
+	[496afee92670]
+
+	* code_generator/py2c.c:
+	Tweaked the conversion of the flags of composite modules.
+	[02b5cb29c41f]
+
+	* sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed the parsing of composite modules.
+	[dc15c71b4201]
+
+	* sipbuild/generator/parser/rules.py:
+	Fixed the name of a composite module.
+	[541e38c4c8d9]
+
+2022-02-18  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/templates.py:
+	Fixed the selection of the interface file corresponding to generated
+	types in handwritten code.
+	[a48dd2e2f4bb]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the detection of numeric and sequence objects.
+	[08f3fa5b42d4]
+
+2022-02-16  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py:
+	Fixed the handling of variables defined in a namespace.
+	[946a96fb9f39]
+
+	* code_generator/py2c.c:
+	Fixed the conversion of namespaces from Python to C.
+	[0928ee010976]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Remove duplicate tags and features from bindings .toml files.
+	[4ffb2616f84e]
+
+	* sipbuild/bindings_configuration.py:
+	Fixed the searching for the .toml file for a set of bindings.
+	[71073ff37014]
+
+2022-02-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/py2c.c:
+	Clear the object caches before convert the Python data structures to
+	C.
+	[f7a87f2b0265]
+
+2022-02-14  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/rules.py:
+	Fix the reading of a .sip file multiple times.
+	[fd5f21f3b468]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the handling of automatic slots for global operators.
+	[44cb3a730518]
+
+	* sipbuild/generator/parser/tokens.py:
+	Fixed the lexing of numbers.
+	[a3fd1c6e4ad1]
+
+	* sipbuild/generator/parser/rules.py,
+	sipbuild/generator/parser/tokens.py:
+	Refactored the parser to make it easier to read and to give access
+	to token values to the error handler.
+	[0ec22c357901]
+
+2022-02-13  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/parser/rules.py:
+	Improve the protection against unbalanced %If/%End as they can
+	become unbalanced as a result of the parser's attempts to recover
+	from errors.
+	[5d54d836eef4]
+
+2022-02-12  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/generator/utils.py:
+	Fixed the comparision of templates.
+	[72b18be14897]
+
+	* code_generator/py2c.c:
+	Fixed the handling of opaque classes.
+	[1297dfb558f7]
+
+	* sipbuild/generator/parser/rules.py:
+	Fixed the parsing of dereferences from typedefs.
+	[13ada6dc0228]
+
+	* code_generator/py2c.c, sipbuild/generator/parser/rules.py,
+	sipbuild/generator/specification.py:
+	Fixed issues with the parsing and conversion of literal expressions.
+	[cdf1c60c625f]
+
+	* sipbuild/generator/parser/parser_manager.py:
+	Fixed the method code of auto-added slots.
+	[bf2163b67d24]
+
+	* code_generator/py2c.c:
+	Fixed the handling of /KeepReference/.
+	[19bdfcd90623]
+
+	* sipbuild/generator/templates.py:
+	Fixed the expansions in hand-written code.
+	[84a65d0e434e]
+
+	* sipbuild/generator/specification.py:
+	Fixed the value of IOR.
+	[a3b8ee6d7051]
+
+	* sipbuild/generator/templates.py:
+	Fixed the interface files used by instantiated class templates.
+	[60179be042fd]
+
+	* sipbuild/generator/parser/rules.py:
+	Fixed the handling of /Array/ and /ArraySize/.
+	[c3a88e463fc2]
+
+	* code_generator/sip.h:
+	Removed some legacy data structures.
+	[dd8941e219ef]
+
+	* code_generator/lexer.c, code_generator/parser.c,
+	code_generator/parser.h, code_generator/sip.h:
+	Removed vestiges of the old parser.
+	[26aa4d15a874]
+
+2022-02-01  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* MANIFEST.in, NEWS, code_generator/metasrc/README,
+	code_generator/metasrc/lexer.l, code_generator/metasrc/parser.y,
+	code_generator/py2c.c, code_generator/pybinding.c, setup.py,
+	sipbuild/bindings.py, sipbuild/bindings_configuration.py,
+	sipbuild/builder.py, sipbuild/generator/__init__.py,
+	sipbuild/generator/parser/__init__.py,
+	sipbuild/generator/parser/annotations.py,
+	sipbuild/generator/parser/instantiations.py,
+	sipbuild/generator/parser/parser.py,
+	sipbuild/generator/parser/parser_manager.py,
+	sipbuild/generator/parser/python_exceptions.py,
+	sipbuild/generator/parser/rules.py,
+	sipbuild/generator/parser/tokens.py,
+	sipbuild/generator/python_slots.py,
+	sipbuild/generator/specification.py,
+	sipbuild/generator/templates.py, sipbuild/generator/utils.py,
+	sipbuild/helpers.py:
+	The flex/yacc .sip file parser has been replaced with a pure Python
+	implementation using ply.
+	[f5ce72f74d3e]
+
+	* Merged the 6.5-maint branch.
+	[f4eed68c09a2]
+
+	* .hgtags:
+	Added tag 6.5.1 for changeset 96a0deaabfa4
+	[789ef0b93296] <6.5-maint>
+
+2022-01-25  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/metasrc/parser.y, code_generator/parser.c,
+	code_generator/sip.h, code_generator/transform.c:
+	Don't cache the name of mapped type templates.
+	[96a0deaabfa4] [6.5.1] <6.5-maint>
+
+	* NEWS, code_generator/gencode.c, code_generator/metasrc/parser.y,
+	code_generator/parser.c, code_generator/sip.h,
+	code_generator/transform.c, sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/siplib.c:
+	Backed out the change that removed support for slots in enums as
+	they are used to implement operators between enums.
+	[221bd63f1663] <6.5-maint>
+
+2022-01-24  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/sip.h:
+	Removed a redundant data structure type.
+	[1c255c20d5c4] <6.5-maint>
+
+	* code_generator/transform.c:
+	Make the sub-order of the name cache alphabetical so that it is
+	repeatable.
+	[2ca2af967ee7] <6.5-maint>
+
+2022-01-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* sipbuild/buildable.py:
+	Suppress version information in the bindings .toml file.
+	[9c0cf07fb8e3] <6.5-maint>
+
+	* NEWS, sipbuild/builder.py, sipbuild/module/module.py:
+	Suppress version information in the sip module.
+	[5f3db5dccecd] <6.5-maint>
+
+2022-01-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, doc/command_line_tools.rst, doc/pyproject_toml.rst,
+	sipbuild/builder.py, sipbuild/project.py:
+	Added the --no-compile option to sip-build.
+	[44091be44d5d] <6.5-maint>
+
+	* NEWS, code_generator/gencode.c, code_generator/pybinding.c,
+	code_generator/type_hints.c, doc/command_line_tools.rst,
+	doc/pyproject_toml.rst, sipbuild/builder.py, sipbuild/project.py:
+	Added the --no-version-info command line option to sip-build.
+	[3907854527a4] <6.5-maint>
+
+2022-01-19  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/metasrc/parser.y,
+	code_generator/parser.c, code_generator/sip.h,
+	code_generator/transform.c, sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/12/siplib.c,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/siplib.c:
+	Removed ancient unused support for slots in enums.
+	[33fb1b443d21] <6.5-maint>
+
+2022-01-15  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, sipbuild/module/source/12/objmap.c,
+	sipbuild/module/source/12/sip.h.in,
+	sipbuild/module/source/13/objmap.c,
+	sipbuild/module/source/13/sip.h.in:
+	Fix a use-after-free bug in all versions of the sip module.
+	[072b8949de41] <6.5-maint>
+
+2022-01-07  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c:
+	Fixed the generated code for API 13 that determines whether the self
+	argument of a method is 'self' or 'cls'.
+	[3f632f439886] <6.5-maint>
+
+2021-12-22  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/gencode.c, code_generator/metasrc/parser.y,
+	code_generator/parser.c, code_generator/parser.h,
+	code_generator/sip.h, code_generator/transform.c,
+	code_generator/type_hints.c:
+	Refactoring in anticipation of removing the existing parser.
+	[5428e8cdbe12] <6.5-maint>
+
+	* NEWS, code_generator/gencode.c, code_generator/sip.h,
+	code_generator/transform.c:
+	Re-implemented the cast function so that the generated code works
+	with both virtual and non-virtual diamond hierarchies.
+	[a511a01e4555] <6.5-maint>
+
+2021-12-20  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* code_generator/parser.c, doc/pyproject_toml.rst,
+	doc/sipbuild_api.rst:
+	Documentation fixes.
+	[741f094fd708] <6.5-maint>
+
+	* NEWS, code_generator/metasrc/parser.y:
+	Clarified a comment.
+	[f7bb7e784874] <6.5-maint>
+
+2021-12-19  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/parser.c,
+	code_generator/type_hints.c:
+	Do not generate a 'self' argument in docstrings or .pyi files for
+	methods that are in a hidden namespace.
+	[628174d9f0b9] <6.5-maint>
+
+	* NEWS, code_generator/metasrc/parser.y, code_generator/parser.c,
+	code_generator/sip.h, code_generator/transform.c:
+	More minor refactoring and comments.
+	[c0429779bf87] <6.5-maint>
+
+2021-12-16  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/metasrc/parser.y, code_generator/parser.c,
+	code_generator/sip.h, code_generator/transform.c:
+	Minor refactoring of template instantiation.
+	[74ae1a8f2afe] <6.5-maint>
+
+	* doc/specification_files.rst:
+	Removed references to old unsupported annotations in the docs.
+	[5414497f2296] <6.5-maint>
+
+	* code_generator/metasrc/parser.y, code_generator/parser.c,
+	code_generator/sip.h, code_generator/transform.c:
+	Removed a redundant argument.
+	[69d307570a75] <6.5-maint>
+
+2021-12-01  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.5.0 for changeset 8583e2bb1b32
+	[ebaf1f8926f8]
+
+2021-11-25  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/metasrc/parser.y,
+	code_generator/parser.c, code_generator/sip.h,
+	code_generator/transform.c:
+	Removed some redundant legacy code.
+	[8583e2bb1b32] [6.5.0]
+
+2021-11-24  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/type_hints.c:
+	Don't generate type hints for namespace extenders.
+	[e3cf19c9e65e]
+
+2021-11-21  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* NEWS, code_generator/gencode.c, code_generator/metasrc/parser.y,
+	code_generator/parser.c, code_generator/sip.h,
+	code_generator/type_hints.c, doc/annotations.rst,
+	sipbuild/module/source/13/sip.h.in,
+	sipbuild/module/source/13/siplib.c:
+	Added 'UIntEnum' as a value of the /BaseType/ enum annotation to
+	support enum.IntEnum types with unsigned values. The latest version
+	of ABI v13 is v13.2.0.
+	[1321d3ad2747]
+
+2021-10-28  Phil Thompson  <phil@riverbankcomputing.com>
+
+	* .hgtags:
+	Added tag 6.4.0 for changeset 5d67349bb5a9
+	[05e6ab7c140e]
+
 2021-10-24  Phil Thompson  <phil@riverbankcomputing.com>
 
 	* NEWS, code_generator/gencode.c, code_generator/lexer.c,

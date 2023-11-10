@@ -1,7 +1,7 @@
 /*
  * The SIP module interface.
  *
- * Copyright (c) 2021 Riverbank Computing Limited <info@riverbankcomputing.com>
+ * Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
  *
  * This file is part of SIP.
  *
@@ -24,8 +24,8 @@
 #include <Python.h>
 
 /* Sanity check on the Python version. */
-#if PY_VERSION_HEX < 0x03060000
-#error "This version of @_SIP_MODULE_FQ_NAME@ requires Python v3.6 or later"
+#if PY_VERSION_HEX < 0x03070000
+#error "This version of @_SIP_MODULE_FQ_NAME@ requires Python v3.7 or later"
 #endif
 
 
@@ -45,14 +45,36 @@ extern "C" {
 
 /* The version of the ABI. */
 #define SIP_ABI_MAJOR_VERSION       13
-#define SIP_ABI_MINOR_VERSION       1
+#define SIP_ABI_MINOR_VERSION       6
 #define SIP_MODULE_PATCH_VERSION    0
 
 
 /*
- * The changes to this version of the ABI.
+ * The change history of the ABI.
  *
- * This is the first minor version of this version of the ABI.
+ * v13.6
+ *  - Added support for Python v3.12.
+ *  - Added sipPyTypeDictRef().
+ *  - Deprecated sipPyTypeDict().
+ *
+ * v13.5
+ *  - Added the '#' conversion character to the argument parsers.
+ *
+ * v13.4
+ *  - The enum implementation now supports missing members.
+ *  - Published the 'array' type.
+ *  - Added the ctd_sizeof, ctd_array_delete members to sipClassTypeDef.
+ *  - Added the '>' conversion character to the argument parsers.
+ *
+ * v13.3
+ *  - Python v3.7 or later is required.
+ *
+ * v13.2
+ *  - Added support for SIP_ENUM_UINT_ENUM to represent IntEnums with unsigned
+ *    members.
+ *
+ * v13.1
+ *  - Added sipNextExceptionHandler().
  */
 
 
@@ -228,6 +250,7 @@ typedef int (*sipVirtHandlerFunc)(sip_gilstate_t, sipVirtErrorHandlerFunc,
         sipSimpleWrapper *, PyObject *, ...);
 typedef void (*sipAssignFunc)(void *, Py_ssize_t, void *);
 typedef void *(*sipArrayFunc)(Py_ssize_t);
+typedef void (*sipArrayDeleteFunc)(void *);
 typedef void *(*sipCopyFunc)(const void *, Py_ssize_t);
 typedef void (*sipReleaseFunc)(void *, int);
 typedef void (*sipReleaseUSFunc)(void *, int, void *);
@@ -812,6 +835,12 @@ typedef struct _sipClassTypeDef {
 
     /* The mixin initialisation function. */
     initproc ctd_init_mixin;
+
+    /* The optional array delete function. */
+    sipArrayDeleteFunc ctd_array_delete;
+
+    /* The sizeof the class. */
+    size_t ctd_sizeof;
 } sipClassTypeDef;
 
 
@@ -1329,7 +1358,7 @@ typedef struct _sipAPIDef {
     void (*api_visit_wrappers)(sipWrapperVisitorFunc visitor, void *closure);
     int (*api_register_exit_notifier)(PyMethodDef *md);
     int (*api_is_enum_flag)(PyObject *o);
-    void (*unused_public_1)(void);
+    PyObject *(*api_py_type_dict_ref)(PyTypeObject *);
     void (*unused_public_2)(void);
     void (*unused_public_3)(void);
     void (*unused_public_4)(void);
@@ -1416,8 +1445,7 @@ const sipAPIDef *sip_init_library(PyObject *mod_dict);
 
 
 /*
- * These are flags that can be passed to sipConvertToArray().  These are held
- * in sw_flags.
+ * These are flags that can be passed to sipConvertToArray().
  */
 #define SIP_READ_ONLY       0x01    /* The array is read-only. */
 #define SIP_OWNS_MEMORY     0x02    /* The array owns its memory. */
@@ -1493,6 +1521,7 @@ const sipAPIDef *sip_init_library(PyObject *mod_dict);
 #define SIP_ENUM_FLAG       1       /* The base type is Flag. */
 #define SIP_ENUM_INT_ENUM   2       /* The base type is IntEnum. */
 #define SIP_ENUM_INT_FLAG   3       /* The base type is IntFlag. */
+#define SIP_ENUM_UINT_ENUM  4       /* The base type is IntEnum with unsigned members. */
 
 
 /*

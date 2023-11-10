@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Riverbank Computing Limited
+# Copyright (c) 2023, Riverbank Computing Limited
 # All rights reserved.
 #
 # This copy of SIP is licensed for use under the terms of the SIP License
@@ -38,8 +38,7 @@ from .configurable import Configurable, Option
 from .exceptions import UserException
 from .module import resolve_abi_version
 from .py_versions import OLDEST_SUPPORTED_MINOR
-from .pyproject import (PyProjectException, PyProjectOptionException,
-        PyProjectUndefinedOptionException)
+from .pyproject import PyProjectException, PyProjectOptionException
 
 
 class Project(AbstractProject, Configurable):
@@ -47,7 +46,7 @@ class Project(AbstractProject, Configurable):
 
     # The configurable options.
     _options = (
-        # The ABI version that the sip module should use.
+        # The minimum required ABI version of the sip module.
         Option('abi_version'),
 
         # The callable that will return an Bindings instance.  This is used for
@@ -65,10 +64,6 @@ class Project(AbstractProject, Configurable):
 
         # The list of GUI script entry points.
         Option('gui_scripts', option_type=list),
-
-        # The minimum GLIBC version required by the project.  This is used to
-        # determine the correct platform tag to use for Linux wheels.
-        Option('minimum_glibc_version'),
 
         # The minimum macOS version required by the project.  This is used to
         # determine the correct platform tag to use for macOS wheels.
@@ -105,13 +100,14 @@ class Project(AbstractProject, Configurable):
         # The fully qualified name of the sip module.
         Option('sip_module'),
 
-        # The list of files and directories, specified as glob patterns
-        # relative to the project directory, that should be included in a
-        # wheel.  If an element of list is a string then it is a pattern and
-        # files and directories are installed in the target directory.  If an
-        # element is a 2-tuple then the first part is the pattern and the
-        # second part is the name of a sub-directory relative to the target
-        # directory where the files and directories are installed.
+        # The list of files and directories, specified as glob patterns, that
+        # should be included in a wheel.  If a pattern is relative then it is
+        # taken as being relative to the project directory.  If an element of
+        # the list is a string then it is a pattern and files and directories
+        # are installed in the target directory.  If an element is a 2-tuple
+        # then the first part is the pattern and the second part is the name of
+        # a sub-directory relative to the target directory where the files and
+        # directories are installed.
         Option('wheel_includes', option_type=list),
 
         # The user-configurable options.
@@ -130,6 +126,10 @@ class Project(AbstractProject, Configurable):
                 help="disable the use of manylinux in the platform tag used "
                         "in the wheel name",
                 tools=['wheel']),
+        Option('minimum_glibc_version',
+                help="the minimum GLIBC version to be used in the platform "
+                        "tag of Linux wheels",
+                metavar="M.N", tools=['wheel']),
         Option('scripts_dir', default=os.path.dirname(sys.executable),
                 help="the scripts installation directory", metavar="DIR",
                 tools=['build', 'install']),
@@ -138,6 +138,13 @@ class Project(AbstractProject, Configurable):
                 tools=['build', 'install']),
         Option('api_dir', help="generate a QScintilla .api file in DIR",
                 metavar="DIR"),
+        Option('compile', option_type=bool, inverted=True,
+                help="disable the compilation of the generated code",
+                tools=['build']),
+        Option('version_info', option_type=bool, inverted=True,
+                help="disable any reference to the SIP version number in "
+                        "generated code",
+                tools=['build']),
     )
 
     # The configurable options for multiple bindings.
@@ -155,6 +162,7 @@ class Project(AbstractProject, Configurable):
 
         # The current directory should contain the .toml file.
         self.root_dir = os.getcwd()
+        self.arguments = None
         self.bindings = collections.OrderedDict()
         self.bindings_factories = []
         self.builder = None
@@ -203,11 +211,6 @@ class Project(AbstractProject, Configurable):
 
     def apply_user_defaults(self, tool):
         """ Set default values for user options that haven't been set yet. """
-
-        # If we are the backend to a 3rd-party frontend (most probably pip)
-        # then let it handle the verbosity of messages.
-        if self.verbose is None and tool == '':
-            self.verbose = True
 
         # This is only used when creating sdist and wheel files.
         if self.name is None:
@@ -327,8 +330,15 @@ class Project(AbstractProject, Configurable):
             # We expect a three part tag so leave anything else unchanged.
             parts = platform_tag.split('-')
             if len(parts) == 3:
-                parts[1] = '{}.{}'.format(self.minimum_macos_version[0],
-                        self.minimum_macos_version[1])
+                min_major = int(self.minimum_macos_version[0])
+                min_minor = int(self.minimum_macos_version[1])
+
+                # For arm64 binaries enforce a valid minimum macOS version.
+                if parts[2] == 'arm64' and min_major < 11:
+                    min_major = 11
+                    min_minor = 0
+
+                parts[1] = '{}.{}'.format(min_major, min_minor)
 
                 platform_tag = '-'.join(parts)
 
@@ -336,21 +346,13 @@ class Project(AbstractProject, Configurable):
             # We expect a two part tag so leave anything else unchanged.
             parts = platform_tag.split('-')
             if len(parts) == 2:
-                if self.minimum_glibc_version > (2, 17):
-                    # PEP 600.
-                    parts[0] = 'manylinux'
-                    parts.insert(1,
-                            '{}.{}'.format(self.minimum_glibc_version[0],
-                                    self.minimum_glibc_version[1]))
-                elif self.minimum_glibc_version > (2, 12):
-                    # PEP 599.
-                    parts[0] = 'manylinux2014'
-                elif self.minimum_glibc_version > (2, 5):
-                    # PEP 571.
-                    parts[0] = 'manylinux2010'
+                if self.minimum_glibc_version:
+                    major, minor = self.minimum_glibc_version
                 else:
-                    # PEP 513.
-                    parts[0] = 'manylinux1'
+                    major, minor = 2, 5
+
+                parts[0] = 'manylinux'
+                parts.insert(1, '{}.{}'.format(major, minor))
 
                 platform_tag = '-'.join(parts)
 
@@ -382,7 +384,7 @@ class Project(AbstractProject, Configurable):
                 next_abi_major)]
 
     def get_sip_distinfo_command_line(self, sip_distinfo, inventory,
-            generator=None, wheel_tag=None):
+            generator=None, wheel_tag=None, generator_version=None):
         """ Return a sequence of command line arguments to invoke sip-distinfo.
         """
 
@@ -402,6 +404,10 @@ class Project(AbstractProject, Configurable):
         if generator is not None:
             args.append('--generator')
             args.append(generator)
+
+        if generator_version is not None:
+            args.append('--generator-version')
+            args.append(generator_version)
 
         if wheel_tag is not None:
             args.append('--wheel-tag')
@@ -462,8 +468,6 @@ class Project(AbstractProject, Configurable):
                         "'{0}' is an invalid GLIBC version number".format(
                                 value),
                         section_name='tool.sip.project')
-        else:
-            value = (2, 5)
 
         self._minimum_glibc_version = value
 
@@ -569,14 +573,9 @@ class Project(AbstractProject, Configurable):
         # Set the initial configuration from the pyproject.toml file.
         self._set_initial_configuration(pyproject, tool)
 
-        # Add any tool-specific command line options for (so far unspecified)
+        # Add any tool-specific command line arguments for (so far unspecified)
         # parts of the configuration.
-        if tool != 'pep517':
-            self._configure_from_command_line(tool, tool_description)
-        else:
-            # Until pip improves it's error reporting we give the user all the
-            # help we can.
-            self.verbose = True
+        self._configure_from_arguments(tool, tool_description)
 
         # Now that any help has been given we can report a problematic
         # pyproject.toml file.
@@ -712,8 +711,8 @@ class Project(AbstractProject, Configurable):
         for bindings in self.bindings.values():
             bindings.verify_configuration(tool)
 
-    def _configure_from_command_line(self, tool, tool_description):
-        """ Update the configuration from the user supplied command line. """
+    def _configure_from_arguments(self, tool, tool_description):
+        """ Update the configuration from any user supplied arguments. """
 
         from argparse import SUPPRESS
         from .argument_parser import ArgumentParser
@@ -739,7 +738,7 @@ class Project(AbstractProject, Configurable):
             bindings.add_command_line_options(parser, tool, all_options)
 
         # Parse the arguments and update the corresponding configurables.
-        args = parser.parse_args()
+        args = parser.parse_args(self.arguments)
 
         for option, configurables in all_options.items():
             for configurable in configurables:

@@ -3,17 +3,15 @@ Section: devel
 Priority: optional
 Maintainer: Debian Python Team <team+python@tracker.debian.org>
 Uploaders: Dmitry Shachnev <mitya57@debian.org>
-Build-Depends: bison,
-               debhelper-compat (= 13),
-               dh-python,
-               flex,
+Build-Depends: debhelper-compat (= 13),
+               dh-python (>= 5.20211213),
                python3-all-dev,
                python3-packaging,
-               python3-setuptools,
-               python3-toml
+               python3-ply,
+               python3-setuptools
 Build-Depends-Indep: dh-sequence-sphinxdoc, python3-doc, python3-sphinx
 Rules-Requires-Root: no
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 Homepage: https://riverbankcomputing.com/software/sip/intro
 Vcs-Git: https://salsa.debian.org/python-team/packages/sip6.git
 Vcs-Browser: https://salsa.debian.org/python-team/packages/sip6
@@ -55,6 +53,7 @@ Architecture: all
 Section: doc
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}
 Suggests: python3-doc
+Multi-Arch: foreign
 Description: Python bindings generator for C/C++ libraries — documentation
  SIP is a collection of tools that makes it very easy to create Python bindings
  for C and C++ libraries.

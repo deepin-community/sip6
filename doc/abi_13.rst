@@ -477,10 +477,8 @@ module, that can be used by handwritten code in specification files.
 
 .. c:function:: int sipConvertFromSliceObject(PyObject *slice, Py_ssize_t length, Py_ssize_t *start, Py_ssize_t *stop, Py_ssize_t *step, Py_ssize_t *slicelength)
 
-    For Python v3.6 and earlier this is a thin wrapper around Python's
-    :c:func:`PySlice_GetIndicesEx()` function.  For Python v3.7 and later it
-    implements the same functionality using the preferred
-    :c:func:`PySlice_Unpack()` and :c:func:`PySlice_AdjustIndices()` functions.
+    This is a thin wrapper around Python's :c:func:`PySlice_Unpack()` and
+    :c:func:`PySlice_AdjustIndices()` functions.
 
 
 .. c:function:: PyObject *sipConvertFromType(void *cpp, const sipTypeDef *td, PyObject *transferObj)
@@ -549,9 +547,6 @@ module, that can be used by handwritten code in specification files.
     memory is not copied and may be modified in situ.  Arrays support the
     buffer protocol and so can be passed to other modules, again without the
     underlying memory being copied.
-
-    :class:`sip.array` objects are not supported by the code generator.  They
-    can only be created by handwritten code or by :func:`sip.voidptr.asarray`.
 
     :param data:
         the address of the start of the C/C++ array.
@@ -685,9 +680,6 @@ module, that can be used by handwritten code in specification files.
     copied and may be modified in situ.  Arrays support the buffer protocol and
     so can be passed to other modules, again without the underlying memory
     being copied.
-
-    :class:`sip.array` objects are not supported by the code generator.  They
-    can only be created by handwritten code.
 
     :param data:
         the address of the start of the C/C++ array.
@@ -1263,7 +1255,7 @@ module, that can be used by handwritten code in specification files.
 .. c:function:: void *sipMalloc(size_t nbytes)
 
     This allocates an area of memory on the heap using the Python
-    :c:func:`PyMem_Malloc()` function.  The memory is freed by calling
+    :c:func:`PyMem_RawMalloc()` function.  The memory is freed by calling
     :c:func:`sipFree()`.
 
     :param nbytes:
@@ -1471,10 +1463,25 @@ module, that can be used by handwritten code in specification files.
     This provides access to a Python type object's ``tp_dict`` field and is
     typically used when the limited Python API is enabled.
 
+    .. note::
+        This is deprecated in ABI v13.6 and must not be used with Python v3.12
+        and later.
+
     :param py_type:
         the type object.
     :return:
         the value of the type object's ``tp_dict`` field.
+
+
+.. c:function:: PyObject *sipPyTypeDictRef(PyTypeObject *py_type)
+
+    This provides access to a Python type object's type dictionary and is
+    typically used when the limited Python API is enabled.
+
+    :param py_type:
+        the type object.
+    :return:
+        a new reference to type object's type dictionary.
 
 
 .. c:function:: void sipPrintObject(PyObject *obj)
