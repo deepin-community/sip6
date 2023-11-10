@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Riverbank Computing Limited
+# Copyright (c) 2023, Riverbank Computing Limited
 # All rights reserved.
 #
 # This copy of SIP is licensed for use under the terms of the SIP License
@@ -25,12 +25,14 @@ import os
 import sys
 
 from .buildable import BuildableBindings
-from .code_generator import (parse, generateCode, generateExtracts,
-        generateAPI, generateTypeHints)
+from .code_generator import generateCode, py2c
 from .configurable import Configurable, Option
 from .exceptions import UserException
+from .generator import parse, resolve
+from .generator.outputs import output_api, output_extract, output_pyi
 from .installable import Installable
 from .module import copy_nonshared_sources
+from .version import SIP_VERSION
 
 
 class Bindings(Configurable):
@@ -153,17 +155,32 @@ class Bindings(Configurable):
 
         project = self.project
 
-        # Parse the input file.
-        pt, fq_name, uses_limited_api, sip_files, self.tags, self.disabled_features = parse(
-                self.sip_file.replace('\\', '/'), True, self.tags, None,
-                self.disabled_features, self.protected_is_public)
+        # The old parser had no concept of the encoding of a .sip file.  For
+        # the moment we say that files should be UTF-8.  If that proves to be a
+        # problem then a project-specific encoding should be able to be
+        # specified in pyproject.toml which would apply to all .sip files that
+        # make up the project.
+        encoding = 'UTF-8'
 
-        uses_limited_api = bool(uses_limited_api)
+        # Parse the input file.
+        spec, modules, sip_files = parse(self.sip_file, SIP_VERSION, encoding,
+                project.abi_version, self.tags, self.disabled_features,
+                self.protected_is_public, self._sip_include_dirs,
+                project.sip_module)
+
+        # Resolve the types.
+        resolve(spec, modules)
+
+        pt = py2c(spec, encoding)
+
+        module = spec.module
+
+        uses_limited_api = module.use_limited_api or spec.is_composite
 
         # The details of things that will have been generated.  Note that we
         # don't include anything for .api files or generic extracts as the
         # arguments include a file name.
-        buildable = BuildableBindings(self, fq_name,
+        buildable = BuildableBindings(self, module.fq_py_name.name,
                 uses_limited_api=uses_limited_api)
 
         buildable.builder_settings.extend(self.builder_settings)
@@ -179,12 +196,12 @@ class Bindings(Configurable):
             project.progress(
                     "Generating the {0} .api file".format(buildable.target))
 
-            generateAPI(pt,
+            output_api(spec,
                     os.path.join(project.build_dir, buildable.target + '.api'))
 
         # Generate any extracts.
-        if self.generate_extracts:
-            generateExtracts(pt, extracts)
+        for extract_ref in self.generate_extracts:
+            output_extract(spec, extract_ref)
 
         # Generate any type hints file.
         if self.pep484_pyi and not self.internal:
@@ -194,7 +211,7 @@ class Bindings(Configurable):
             pyi_path = os.path.join(buildable.build_dir,
                     buildable.target + '.pyi')
 
-            generateTypeHints(pt, pyi_path)
+            output_pyi(spec, project, pyi_path)
 
             installable = Installable('pyi',
                     target_subdir=buildable.get_install_subdir())

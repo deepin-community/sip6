@@ -62,6 +62,13 @@ Support for \fBmanylinux\fP in the platform tag of a name of a wheel is
 disabled.  It should only be used if support for older versions of
 \fBpip\fP is required.
 .TP
+.B \-\-minimum\-glibc\-version M.N
+\fBM.N\fP is the minimum GLIBC version required by the project specified as
+the major and minor version numbers.  This is used to determine the correct
+platform tag to use for Linux wheels.  The default version of GLIBC is v2.5
+which corresponds to \fBmanylinux1\fP\&.  It is ignored if the
+\fB\-\-no\-manylinux\fP option is specified.
+.TP
 .B \-\-name NAME
 \fBNAME\fP is used instead of the PyPI project name in the
 \fBpyproject.toml\fP file in the name of the wheel file.

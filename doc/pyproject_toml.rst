@@ -40,9 +40,15 @@ The key/values in this section apply to the build system as a whole.  Unless
 stated otherwise, all values are strings.
 
 **project-factory**
-    The value is a callable that will return an object that is a sub-class
-    of :class:`~sipbuild.AbstractProject`.  The default builder factory is
-    :file:`project.py`.
+    The value is used to identify a callable that will return an object that is
+    a sub-class of :class:`~sipbuild.AbstractProject`.  If the value is the
+    name of a :file:`.py` file then that file is evaluated and the resulting
+    module is searched for a type object that is sub-classed from
+    :class:`~sipbuild.AbstractProject`.  Otherwise the value must be the name
+    of a module to be imported which is then searched for an appropriate type
+    object.  The name of the module may have the name of the callable appended
+    (and separated by ``:``) in which case the type of the object is ignored.
+    The default project factory is :file:`project.py`.
 
 
 ``[tool.sip.builder]`` Section
@@ -111,8 +117,15 @@ list options may contain environment markers as defined in `PEP 508
 
 **builder-factory**
     The value is a callable that will return an object that is a sub-class
-    of :class:`~sipbuild.AbstractBuilder`.  The default builder factory is
+    of :class:`~sipbuild.AbstractBuilder`.  For Python v3.10 and later the
+    default builder factory is :class:`~sipbuild.SetuptoolsBuilder`.  For
+    earlier versions of Python the default builder factory is
     :class:`~sipbuild.DistutilsBuilder`.
+
+**compile**
+    The boolean value specifies if the generated code is to be compiled.
+    By default it is compiled.  There is also a corresponding command line
+    option.
 
 **console-scripts**
     The value is a list of entry points that defines one or more console
@@ -158,7 +171,7 @@ list options may contain environment markers as defined in `PEP 508
     the major and minor version numbers.  This is used to determine the correct
     platform tag to use for Linux wheels.  The default version of GLIBC is v2.5
     which corresponds to ``manylinux1``.  It is ignored if the ``manylinux``
-    option is False.
+    option is False.  There is also a corresponding command line option.
 
 **minimum-macos-version**
     The minimum macOS version required by the project specified as a 2-tuple of
@@ -235,14 +248,20 @@ list options may contain environment markers as defined in `PEP 508
     messages.  By default verbose progress messages are not displayed.  There
     is also a corresponding command line option.
 
+**version-info**
+    The boolean value determines if the generated code includes a reference to
+    the SIP version number.  By default a reference is included.  There is also
+    a corresponding command line option.
+
 **wheel-includes**
-    The values is a list of files and directories, specified as *glob* patterns
-    and relative to the project directory, that should be included in a wheel.
-    If an element of list is a string then it is a pattern and files and
-    directories are installed in the target directory.  If an element is a
-    2-tuple then the first part is the pattern and the # second part is the
-    name of a sub-directory relative to the target directory where the files
-    and directories are installed.
+    The value is a list of files and directories, specified as *glob* patterns,
+    that should be included in a wheel.  If a pattern is relative then it is
+    taken as being relative to the project directory.  If an element of the
+    list is a string then it is a pattern and files and directories are
+    installed in the target directory.  If an element is a 2-tuple then the
+    first part is the pattern and the second part is the name of a
+    sub-directory relative to the target directory where the files and
+    directories are installed.
 
 
 Bindings Sections

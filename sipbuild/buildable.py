@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Riverbank Computing Limited
+# Copyright (c) 2022, Riverbank Computing Limited
 # All rights reserved.
 #
 # This copy of SIP is licensed for use under the terms of the SIP License
@@ -23,10 +23,10 @@
 
 import importlib
 import os
-import sys
 
 from .exceptions import UserException
 from .installable import Installable
+from .py_versions import OLDEST_SUPPORTED_MINOR
 from .version import SIP_VERSION_STR
 
 
@@ -79,7 +79,9 @@ class BuildableFromSources(Buildable):
         self.debug = False
 
         if self.uses_limited_api:
-            self.define_macros.append('Py_LIMITED_API=0x03040000')
+            self.define_macros.append(
+                    'Py_LIMITED_API=0x03{0:02x}0000'.format(
+                            OLDEST_SUPPORTED_MINOR))
 
     def make_names_relative(self):
         """ Make all file and directory names relative to the build directory.
@@ -200,6 +202,7 @@ class BuildableBindings(BuildableModule):
         bindings = self.bindings
 
         with open(config_path, 'w') as cf:
+            sip_version_str = SIP_VERSION_STR if self.project.version_info else ''
             tags = ', '.join(['"{}"'.format(t) for t in bindings.tags])
             disabled = ', '.join(
                     ['"{}"'.format(f) for f in bindings.disabled_features])
@@ -210,4 +213,4 @@ sip-version = "{}"
 sip-abi-version = "{}"
 module-tags = [{}]
 module-disabled-features = [{}]
-'''.format(SIP_VERSION_STR, self.project.abi_version, tags, disabled))
+'''.format(sip_version_str, self.project.abi_version, tags, disabled))

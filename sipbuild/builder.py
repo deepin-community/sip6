@@ -1,4 +1,4 @@
-# Copyright (c) 2021, Riverbank Computing Limited
+# Copyright (c) 2023, Riverbank Computing Limited
 # All rights reserved.
 #
 # This copy of SIP is licensed for use under the terms of the SIP License
@@ -47,7 +47,9 @@ class Builder(AbstractBuilder):
 
         self._generate_bindings()
         self._generate_scripts()
-        self.build_project(self.project.target_dir)
+
+        if self.project.compile:
+            self.build_project(self.project.target_dir)
 
     @abstractmethod
     def build_executable(self, buildable, *, fatal=True):
@@ -173,7 +175,10 @@ class Builder(AbstractBuilder):
 
         # Add any wheel contents defined by the project.
         for nr, (patt, target_subdir) in enumerate(project.wheel_includes):
-            wheel_includes = glob.glob(os.path.join(project.root_dir, patt))
+            if not os.path.isabs(patt):
+                patt = os.path.join(project.root_dir, patt)
+
+            wheel_includes = glob.glob(patt)
             if wheel_includes:
                 installable = Installable(
                         'wheel_includes_{}'.format(nr) if nr else 'wheel_includes',
@@ -254,11 +259,12 @@ class Builder(AbstractBuilder):
 
             # Generate the sip.h file for the shared sip module.
             copy_sip_h(abi_major_version, project.build_dir,
-                    project.sip_module)
+                    project.sip_module, version_info=project.version_info)
 
-        set_globals(SIP_VERSION, SIP_VERSION_STR, int(abi_major_version),
-                int(abi_minor_version), project.sip_module, UserException,
-                [d.replace('\\', '/') for d in sip_include_dirs])
+        set_globals(SIP_VERSION,
+                SIP_VERSION_STR if project.version_info else None,
+                int(abi_major_version), int(abi_minor_version),
+                project.sip_module, UserException)
 
         # Generate the code for each set of bindings.
         api_files = []
@@ -267,8 +273,12 @@ class Builder(AbstractBuilder):
             project.progress(
                     "Generating the {0} bindings".format(bindings.name))
 
-            # Generate the source code.
+            # Generate the source code.  We would prefer to pass the include
+            # directories as an argument to generate but this is a fixed public
+            # interface.
+            bindings._sip_include_dirs = sip_include_dirs
             buildable = bindings.generate()
+            del bindings._sip_include_dirs
 
             if not bindings.internal:
                 api_files.append(
@@ -308,7 +318,7 @@ class Builder(AbstractBuilder):
 
                     # Create a PEP 561 marker file.
                     py_typed_path = os.path.join(project.build_dir, 'py.typed')
-                    with open(py_typed_path, 'w') as f:
+                    with open(py_typed_path, 'w') as _:
                         pass
 
                     installable = Installable('py_typed',
