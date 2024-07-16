@@ -1,22 +1,13 @@
+/* SPDX-License-Identifier: BSD-2-Clause */
+
 /*
  * SIP library code.
  *
- * Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
- *
- * This file is part of SIP.
- *
- * This copy of SIP is licensed for use under the terms of the SIP License
- * Agreement.  See the file LICENSE for more details.
- *
- * This copy of SIP may also used under the terms of the GNU General Public
- * License v2 or v3 as published by the Free Software Foundation which can be
- * found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
- *
- * SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
  */
 
 
+/* Remove when Python v3.12 is no longer supported. */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 #include <datetime.h>
@@ -31,12 +22,6 @@
 #include "sip.h"
 #include "sipint.h"
 #include "sip_array.h"
-
-
-/* There doesn't seem to be a standard way of checking for C99 support. */
-#if !defined(va_copy)
-#define va_copy(d, s)   ((d) = (s))
-#endif
 
 
 /*
@@ -102,9 +87,7 @@ PyTypeObject sipWrapperType_Type = {
     0,                      /* tp_del */
     0,                      /* tp_version_tag */
     0,                      /* tp_finalize */
-#if PY_VERSION_HEX >= 0x03080000
     0,                      /* tp_vectorcall */
-#endif
 };
 
 
@@ -170,9 +153,7 @@ static sipWrapperType sipWrapper_Type = {
             0,              /* tp_del */
             0,              /* tp_version_tag */
             0,              /* tp_finalize */
-#if PY_VERSION_HEX >= 0x03080000
             0,              /* tp_vectorcall */
-#endif
         },
         {
             0,              /* am_await */
@@ -786,9 +767,7 @@ static PyTypeObject sipEnumType_Type = {
     0,                      /* tp_del */
     0,                      /* tp_version_tag */
     0,                      /* tp_finalize */
-#if PY_VERSION_HEX >= 0x03080000
     0,                      /* tp_vectorcall */
-#endif
 };
 
 
@@ -2601,7 +2580,7 @@ static PyObject *buildObject(PyObject *obj, const char *fmt, va_list va)
             break;
 
         case '=':
-            el = PyLong_FromUnsignedLong(va_arg(va, size_t));
+            el = PyLong_FromSize_t(va_arg(va, size_t));
             break;
 
         case 'B':
@@ -3002,6 +2981,19 @@ static int parseResult(PyObject *method, PyObject *res,
                 {
                     float *p = va_arg(va, float *);
                     float v = (float)PyFloat_AsDouble(arg);
+
+                    if (PyErr_Occurred())
+                        invalid = TRUE;
+                    else if (p != NULL)
+                        *p = v;
+                }
+
+                break;
+
+           case 'I':
+                {
+                    char *p = va_arg(va, char *);
+                    char v = sip_api_long_as_char(arg);
 
                     if (PyErr_Occurred())
                         invalid = TRUE;
@@ -3902,7 +3894,7 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
     {
     case '#':
             /* A ctor has an argument with the /Transfer/ annotation. */
-            *selfp = va_arg(va, PyObject *);
+            *selfp = (sipSimpleWrapper *)va_arg(va, PyObject *);
             break;
 
     case 'B':
@@ -4915,9 +4907,28 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
                 break;
             }
 
+       case 'I':
+            {
+                /* Char as an integer. */
+
+                char *p = va_arg(va, char *);
+
+                if (arg != NULL)
+                {
+                    char v = sip_api_long_as_char(arg);
+
+                    if (PyErr_Occurred())
+                        handle_failed_int_conversion(&failure, arg);
+                    else
+                        *p = v;
+                }
+
+                break;
+            }
+
         case 'L':
             {
-                /* Signed char. */
+                /* Signed char as an integer. */
 
                 signed char *p = va_arg(va, signed char *);
 
@@ -4936,7 +4947,7 @@ static int parsePass1(PyObject **parseErrp, sipSimpleWrapper **selfp,
 
         case 'M':
             {
-                /* Unsigned char. */
+                /* Unsigned char as an integer. */
 
                 unsigned char *p = va_arg(va, unsigned char *);
 
@@ -5665,6 +5676,8 @@ static int parsePass2(sipSimpleWrapper *self, int selfarg, PyObject *sipArgs,
 
                 if (flags & FMT_AP_TRANSFER_THIS)
                     owner = va_arg(va, PyObject **);
+                else
+                    owner = NULL;
 
                 if (flags & FMT_AP_NO_CONVERTORS)
                 {
@@ -5686,7 +5699,7 @@ static int parsePass2(sipSimpleWrapper *self, int selfarg, PyObject *sipArgs,
                     if (iserr)
                         return FALSE;
 
-                    if (flags & FMT_AP_TRANSFER_THIS && *p != NULL)
+                    if (owner != NULL && *p != NULL)
                         *owner = arg;
                 }
 
@@ -10778,6 +10791,10 @@ static PyObject *slot_richcompare(PyObject *self, PyObject *arg, int op)
     case Py_GE:
         st = ge_slot;
         break;
+
+    default:
+        /* Suppress a compiler warning. */
+        st = -1;
     }
 
     /* It might not exist if not all the above have been implemented. */
@@ -10907,9 +10924,7 @@ sipWrapperType sipSimpleWrapper_Type = {
             0,              /* tp_del */
             0,              /* tp_version_tag */
             0,              /* tp_finalize */
-#if PY_VERSION_HEX >= 0x03080000
             0,              /* tp_vectorcall */
-#endif
         },
         {
             0,              /* am_await */

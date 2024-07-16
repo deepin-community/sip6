@@ -1,22 +1,13 @@
+/* SPDX-License-Identifier: BSD-2-Clause */
+
 /*
  * This file implements the API for the array type.
  *
- * Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
- *
- * This file is part of SIP.
- *
- * This copy of SIP is licensed for use under the terms of the SIP License
- * Agreement.  See the file LICENSE for more details.
- *
- * This copy of SIP may also used under the terms of the GNU General Public
- * License v2 or v3 as published by the Free Software Foundation which can be
- * found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
- *
- * SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
  */
 
 
+/* Remove when Python v3.12 is no longer supported. */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
@@ -320,7 +311,8 @@ static int sipArray_getbuffer(PyObject *self, Py_buffer *view, int flags)
 
     view->format = NULL;
     if ((flags & PyBUF_FORMAT) == PyBUF_FORMAT)
-        view->format = format;
+        /* Note that the need for a cast is probably a Python bug. */
+        view->format = (char *)format;
 
     view->ndim = 1;
 
@@ -384,7 +376,11 @@ static PyObject *sipArray_repr(PyObject *self)
  */
 static PyObject *sipArray_new(PyTypeObject *cls, PyObject *args, PyObject *kw)
 {
+#if PY_VERSION_HEX >= 0x030d0000
+    static char * const kwlist[] = {"", "", NULL};
+#else
     static char *kwlist[] = {"", "", NULL};
+#endif
 
     Py_ssize_t length;
     PyObject *array, *type;
@@ -483,9 +479,7 @@ PyTypeObject sipArray_Type = {
     0,                      /* tp_del */
     0,                      /* tp_version_tag */
     0,                      /* tp_finalize */
-#if PY_VERSION_HEX >= 0x03080000
     0,                      /* tp_vectorcall */
-#endif
 };
 
 

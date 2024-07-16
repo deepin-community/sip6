@@ -1,19 +1,9 @@
+/* SPDX-License-Identifier: BSD-2-Clause */
+
 /*
  * This file defines the core sip module internal interfaces.
  *
- * Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
- *
- * This file is part of SIP.
- *
- * This copy of SIP is licensed for use under the terms of the SIP License
- * Agreement.  See the file LICENSE for more details.
- *
- * This copy of SIP may also used under the terms of the GNU General Public
- * License v2 or v3 as published by the Free Software Foundation which can be
- * found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
- *
- * SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
  */
 
 
@@ -21,8 +11,12 @@
 #define _SIP_CORE_H
 
 
+/* Remove when Python v3.12 is no longer supported. */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
+
+#include <stdbool.h>
+#include <stdint.h>
 
 #include "sip.h"
 
@@ -55,9 +49,9 @@ typedef struct
 typedef struct
 {
     int primeIdx;               /* Index into table sizes. */
-    unsigned long size;         /* Size of hash table. */
-    unsigned long unused;       /* Nr. unused in hash table. */
-    unsigned long stale;        /* Nr. stale in hash table. */
+    uintptr_t size;             /* Size of hash table. */
+    uintptr_t unused;           /* Nr. unused in hash table. */
+    uintptr_t stale;            /* Nr. stale in hash table. */
     sipHashEntry *hash_array;   /* Current hash table. */
 } sipObjectMap;
 
@@ -153,9 +147,7 @@ sipSimpleWrapper *sipOMFindObject(sipObjectMap *om, void *key,
 void sipOMAddObject(sipObjectMap *om, sipSimpleWrapper *val);
 int sipOMRemoveObject(sipObjectMap *om, sipSimpleWrapper *val);
 
-#if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L
 #define sip_set_bool(p, v)    (*(_Bool *)(p) = (v))
-#endif
 
 
 #ifdef __cplusplus

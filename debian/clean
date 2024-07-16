@@ -1,6 +1,3 @@
-code_generator/lexer.c
-code_generator/parser.c
-code_generator/parser.h
-sip.egg-info/PKG-INFO
-sip.egg-info/SOURCES.txt
-sip.egg-info/entry_points.txt
+sip.egg-info/
+sipbuild/_version.py
+sipbuild/generator/parser/ply/

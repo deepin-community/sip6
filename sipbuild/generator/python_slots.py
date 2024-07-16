@@ -1,24 +1,6 @@
-# Copyright (c) 2021, Riverbank Computing Limited
-# All rights reserved.
-#
-# This copy of SIP is licensed for use under the terms of the SIP License
-# Agreement.  See the file LICENSE for more details.
-#
-# This copy of SIP may also used under the terms of the GNU General Public
-# License v2 or v3 as published by the Free Software Foundation which can be
-# found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS ('AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-2-Clause
+
+# Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
 
 
 from .specification import PySlot
@@ -129,12 +111,36 @@ def is_inplace_number_slot(slot):
     return slot in _INPLACE_NUMBER_SLOTS
 
 
+_INPLACE_SEQUENCE_SLOTS = (PySlot.ICONCAT, PySlot.IREPEAT)
+
+def is_inplace_sequence_slot(slot):
+    """ Return True if a slot is an inplace sequence slot. """
+
+    return slot in _INPLACE_SEQUENCE_SLOTS
+
+
+_INT_ARG_SLOTS = (PySlot.REPEAT, PySlot.IREPEAT)
+
+def is_int_arg_slot(slot):
+    """ Return True if a slot taks an int argument. """
+
+    return slot in _INT_ARG_SLOTS
+
+
 _INT_RETURN_SLOTS = (PySlot.BOOL, PySlot.CONTAINS)
 
 def is_int_return_slot(slot):
     """ Return True if a slot returns an int. """
 
     return slot in _INT_RETURN_SLOTS
+
+
+_MULTI_ARG_SLOTS = (PySlot.SETITEM, PySlot.CALL)
+
+def is_multi_arg_slot(slot):
+    """ Return True if a slot takes more than one argument. """
+
+    return slot in _MULTI_ARG_SLOTS
 
 
 _NUMBER_SLOTS = (PySlot.ADD, PySlot.SUB, PySlot.MUL, PySlot.MOD,

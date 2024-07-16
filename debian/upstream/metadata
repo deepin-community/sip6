@@ -1,3 +1,5 @@
-Bug-Submit: https://www.riverbankcomputing.com/mailman/listinfo/pyqt
-Documentation: https://www.riverbankcomputing.com/static/Docs/sip/
-Repository: https://riverbankcomputing.com/hg/sip/
+Bug-Database: https://github.com/Python-SIP/sip/issues
+Bug-Submit: https://github.com/Python-SIP/sip/issues/new
+Documentation: https://python-sip.readthedocs.io/en/stable/
+Repository: https://github.com/Python-SIP/sip.git
+Repository-Browse: https://github.com/Python-SIP/sip

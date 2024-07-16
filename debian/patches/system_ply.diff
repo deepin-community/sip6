@@ -1,0 +1,36 @@
+From: Dmitry Shachnev <mitya57@debian.org>
+Date: Wed, 20 Dec 2023 21:52:02 +0300
+Subject: Use system ply module instead of the bundled one
+
+Forwarded: not-needed
+---
+ sipbuild/generator/parser/parser_manager.py | 2 +-
+ sipbuild/generator/parser/tokens.py         | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/sipbuild/generator/parser/parser_manager.py b/sipbuild/generator/parser/parser_manager.py
+index 8d3cb13..5c2c9c8 100644
+--- a/sipbuild/generator/parser/parser_manager.py
++++ b/sipbuild/generator/parser/parser_manager.py
+@@ -27,7 +27,7 @@ from ..utils import (argument_as_str, cached_name, find_iface_file,
+ from . import rules
+ from . import tokens
+ from .annotations import InvalidAnnotation, validate_annotation_value
+-from .ply import lex, yacc
++from ply import lex, yacc
+ 
+ 
+ class ParserManager:
+diff --git a/sipbuild/generator/parser/tokens.py b/sipbuild/generator/parser/tokens.py
+index 81bc941..725c881 100644
+--- a/sipbuild/generator/parser/tokens.py
++++ b/sipbuild/generator/parser/tokens.py
+@@ -5,7 +5,7 @@
+ 
+ from ..specification import CodeBlock
+ 
+-from .ply.lex import TOKEN
++from ply.lex import TOKEN
+ 
+ 
+ # The lexer states.
