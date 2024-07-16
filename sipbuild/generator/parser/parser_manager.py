@@ -1,33 +1,13 @@
-# Copyright (c) 2023, Riverbank Computing Limited
-# All rights reserved.
-#
-# This copy of SIP is licensed for use under the terms of the SIP License
-# Agreement.  See the file LICENSE for more details.
-#
-# This copy of SIP may also used under the terms of the GNU General Public
-# License v2 or v3 as published by the Free Software Foundation which can be
-# found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-2-Clause
+
+# Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
 
 
 from functools import partial
 import os
 
-from ply import lex, yacc
-
 from ...bindings_configuration import get_bindings_configuration
-from ...exceptions import UserException
+from ...exceptions import deprecated, UserException
 
 from ..error_log import ErrorLog
 from ..instantiations import instantiate_class
@@ -47,6 +27,7 @@ from ..utils import (argument_as_str, cached_name, find_iface_file,
 from . import rules
 from . import tokens
 from .annotations import InvalidAnnotation, validate_annotation_value
+from .ply import lex, yacc
 
 
 class ParserManager:
@@ -611,7 +592,7 @@ class ParserManager:
             elif base_type_s == 'IntEnum':
                 base_type = EnumBaseType.INT_ENUM
             elif base_type_s == 'UIntEnum':
-                base_type = EnumBaseType.UNSIGNED_INT_ENUM
+                base_type = EnumBaseType.UINT_ENUM
             elif base_type_s == 'IntFlag':
                 base_type = EnumBaseType.INT_FLAG
             else:
@@ -1198,6 +1179,12 @@ class ParserManager:
 
         # Return any value of the right type.
         return KwArgs.OPTIONAL
+
+    def deprecated(self, p, symbol, instead=None):
+        """ Issue a deprecation message about a symbol. """
+
+        deprecated(f"'{p[symbol]}'", instead=instead, filename=self._sip_file,
+                line_nr=p.lineno(symbol))
 
     def ensure_import(self):
         """ We allow %Modules that are part of a %CompositeModule to be either

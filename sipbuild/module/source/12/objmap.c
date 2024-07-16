@@ -1,34 +1,25 @@
+/* SPDX-License-Identifier: BSD-2-Clause */
+
 /*
  * This module implements a hash table class for mapping C/C++ addresses to the
  * corresponding wrapped Python object.
  *
- * Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
- *
- * This file is part of SIP.
- *
- * This copy of SIP is licensed for use under the terms of the SIP License
- * Agreement.  See the file LICENSE for more details.
- *
- * This copy of SIP may also used under the terms of the GNU General Public
- * License v2 or v3 as published by the Free Software Foundation which can be
- * found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
- *
- * SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
  */
 
 
+#include <stdint.h>
 #include <string.h>
 
 #include "sipint.h"
 
 
-#define hash_1(k,s) (((unsigned long)(k)) % (s))
+#define hash_1(k,s) (((uintptr_t)(k)) % (s))
 #define hash_2(k,s) ((s) - 2 - (hash_1((k),(s)) % ((s) - 2)))
 
 
 /* Prime numbers to use as hash table sizes. */
-static unsigned long hash_primes[] = {
+static uintptr_t hash_primes[] = {
     521,        1031,       2053,       4099,
     8209,       16411,      32771,      65537,      131101,     262147,
     524309,     1048583,    2097169,    4194319,    8388617,    16777259,
@@ -37,7 +28,7 @@ static unsigned long hash_primes[] = {
 };
 
 
-static sipHashEntry *newHashTable(unsigned long);
+static sipHashEntry *newHashTable(uintptr_t);
 static sipHashEntry *findHashEntry(sipObjectMap *,void *);
 static void add_object(sipObjectMap *om, void *addr, sipSimpleWrapper *val);
 static void add_aliases(sipObjectMap *om, void *addr, sipSimpleWrapper *val,
@@ -73,7 +64,7 @@ void sipOMFinalise(sipObjectMap *om)
 /*
  * Allocate and initialise a new hash table.
  */
-static sipHashEntry *newHashTable(unsigned long size)
+static sipHashEntry *newHashTable(uintptr_t size)
 {
     size_t nbytes;
     sipHashEntry *hashtab;
@@ -93,7 +84,7 @@ static sipHashEntry *newHashTable(unsigned long size)
  */
 static sipHashEntry *findHashEntry(sipObjectMap *om,void *key)
 {
-    unsigned long hash, inc;
+    uintptr_t hash, inc;
     void *hek;
 
     hash = hash_1(key,om -> size);
@@ -312,7 +303,7 @@ static void add_object(sipObjectMap *om, void *addr, sipSimpleWrapper *val)
  */
 static void reorganiseMap(sipObjectMap *om)
 {
-    unsigned long old_size, i;
+    uintptr_t old_size, i;
     sipHashEntry *ohe, *old_tab;
 
     /* Don't bother if it still has more than 12% available. */

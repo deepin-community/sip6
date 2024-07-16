@@ -1,22 +1,13 @@
+/* SPDX-License-Identifier: BSD-2-Clause */
+
 /*
  * This file implements the API for the voidptr type.
  *
- * Copyright (c) 2022 Riverbank Computing Limited <info@riverbankcomputing.com>
- *
- * This file is part of SIP.
- *
- * This copy of SIP is licensed for use under the terms of the SIP License
- * Agreement.  See the file LICENSE for more details.
- *
- * This copy of SIP may also used under the terms of the GNU General Public
- * License v2 or v3 as published by the Free Software Foundation which can be
- * found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
- *
- * SIP is supplied WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
  */
 
 
+/* Remove when Python v3.12 is no longer supported. */
 #define PY_SSIZE_T_CLEAN
 #include <Python.h>
 
@@ -71,7 +62,11 @@ static PyObject *sipVoidPtr_ascapsule(sipVoidPtrObject *v, PyObject *arg)
 static PyObject *sipVoidPtr_asarray(sipVoidPtrObject *v, PyObject *args,
         PyObject *kw)
 {
+#if PY_VERSION_HEX >= 0x030d0000
+    static char * const kwlist[] = {"size", NULL};
+#else
     static char *kwlist[] = {"size", NULL};
+#endif
 
     Py_ssize_t size = -1;
 
@@ -92,7 +87,11 @@ static PyObject *sipVoidPtr_asarray(sipVoidPtrObject *v, PyObject *args,
 static PyObject *sipVoidPtr_asstring(sipVoidPtrObject *v, PyObject *args,
         PyObject *kw)
 {
+#if PY_VERSION_HEX >= 0x030d0000
+    static char * const kwlist[] = {"size", NULL};
+#else
     static char *kwlist[] = {"size", NULL};
+#endif
 
     Py_ssize_t size = -1;
 
@@ -435,7 +434,11 @@ static PyBufferProcs sipVoidPtr_BufferProcs = {
 static PyObject *sipVoidPtr_new(PyTypeObject *subtype, PyObject *args,
         PyObject *kw)
 {
+#if PY_VERSION_HEX >= 0x030d0000
+    static char * const kwlist[] = {"address", "size", "writeable", NULL};
+#else
     static char *kwlist[] = {"address", "size", "writeable", NULL};
+#endif
 
     struct vp_values vp_conversion;
     Py_ssize_t size = -1;
@@ -520,9 +523,7 @@ PyTypeObject sipVoidPtr_Type = {
     0,                      /* tp_del */
     0,                      /* tp_version_tag */
     0,                      /* tp_finalize */
-#if PY_VERSION_HEX >= 0x03080000
     0,                      /* tp_vectorcall */
-#endif
 };
 
 

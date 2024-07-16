@@ -1,35 +1,17 @@
-# Copyright (c) 2023, Riverbank Computing Limited
-# All rights reserved.
-#
-# This copy of SIP is licensed for use under the terms of the SIP License
-# Agreement.  See the file LICENSE for more details.
-#
-# This copy of SIP may also used under the terms of the GNU General Public
-# License v2 or v3 as published by the Free Software Foundation which can be
-# found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-2-Clause
+
+# Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
 
 
 import os
 import sys
 
 from .buildable import BuildableBindings
-from .code_generator import generateCode, py2c
 from .configurable import Configurable, Option
 from .exceptions import UserException
 from .generator import parse, resolve
-from .generator.outputs import output_api, output_extract, output_pyi
+from .generator.outputs import (output_api, output_code, output_extract,
+        output_pyi)
 from .installable import Installable
 from .module import copy_nonshared_sources
 from .version import SIP_VERSION
@@ -171,8 +153,6 @@ class Bindings(Configurable):
         # Resolve the types.
         resolve(spec, modules)
 
-        pt = py2c(spec, encoding)
-
         module = spec.module
 
         uses_limited_api = module.use_limited_api or spec.is_composite
@@ -219,17 +199,9 @@ class Bindings(Configurable):
             buildable.installables.append(installable)
 
         # Generate the bindings.
-        header, sources = generateCode(pt, buildable.build_dir,
-                self.source_suffix, self.exceptions, self.tracing,
-                self.release_gil, self.concatenate, self.tags,
-                self.disabled_features, self.docstrings, project.py_debug)
-
-        if header:
-            buildable.headers.append(header)
+        output_code(spec, self, project, buildable)
 
         buildable.headers.extend(self.headers)
-
-        buildable.sources.extend(sources)
 
         # Add the sip module code if it is not shared.
         buildable.include_dirs.append(buildable.build_dir)
