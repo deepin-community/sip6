@@ -5,25 +5,29 @@ Maintainer: Debian Python Team <team+python@tracker.debian.org>
 Uploaders: Dmitry Shachnev <mitya57@debian.org>
 Build-Depends: debhelper-compat (= 13),
                dh-python (>= 5.20211213),
-               python3-all-dev,
+               dh-sequence-sphinxdoc <!nodoc>,
+               pybuild-plugin-pyproject,
+               python3-all,
+               python3-all-dev <!nocheck>,
+               python3-doc <!nodoc>,
+               python3-myst-parser <!nodoc>,
                python3-packaging,
                python3-ply,
-               python3-setuptools
-Build-Depends-Indep: dh-sequence-sphinxdoc, python3-doc, python3-sphinx
+               python3-setuptools (>= 64),
+               python3-setuptools-scm (>= 8),
+               python3-sphinx <!nodoc>,
+               python3-sphinx-rtd-theme <!nodoc>
 Rules-Requires-Root: no
-Standards-Version: 4.6.2
-Homepage: https://riverbankcomputing.com/software/sip/intro
+Standards-Version: 4.7.0
+Homepage: https://github.com/Python-SIP/sip
 Vcs-Git: https://salsa.debian.org/python-team/packages/sip6.git
 Vcs-Browser: https://salsa.debian.org/python-team/packages/sip6
-Testsuite: autopkgtest-pkg-python
+Testsuite: autopkgtest-pkg-pybuild
 
 Package: python3-sipbuild
-Architecture: any
+Architecture: all
 Section: python
-Depends: python3-setuptools,
-         ${misc:Depends},
-         ${python3:Depends},
-         ${shlibs:Depends}
+Depends: python3-ply, python3-setuptools, ${misc:Depends}, ${python3:Depends}
 Description: Python bindings generator for C/C++ libraries — the build system
  SIP is a collection of tools that makes it very easy to create Python bindings
  for C and C++ libraries.
@@ -49,6 +53,7 @@ Description: Python bindings generator for C/C++ libraries — command line tool
   - sip-wheel
 
 Package: sip6-doc
+Build-Profiles: <!nodoc>
 Architecture: all
 Section: doc
 Depends: ${misc:Depends}, ${sphinxdoc:Depends}

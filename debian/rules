@@ -4,6 +4,7 @@ export PYBUILD_NAME=sipbuild
 export PYBUILD_AFTER_BUILD=cd {build_dir} && {interpreter} -c \
 	'from ply import yacc; from sipbuild.generator.parser import rules; yacc.yacc(module=rules)' && \
 	test -f sipbuild/generator/parser/parsetab.py
+export PYBUILD_TEST_ARGS=-s test
 
 %:
 	dh $@ --with python3 --buildsystem=pybuild
@@ -12,5 +13,5 @@ execute_after_dh_auto_install:
 	mkdir -p debian/sip-tools/usr
 	mv debian/python3-sipbuild/usr/bin debian/sip-tools/usr/bin
 
-override_dh_install-indep:
-	python3 -m sphinx doc debian/sip6-doc/usr/share/doc/sip6-doc/html
+execute_before_dh_sphinxdoc:
+	python3 -m sphinx docs debian/sip6-doc/usr/share/doc/sip6-doc/html
