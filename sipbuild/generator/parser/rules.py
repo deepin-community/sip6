@@ -1,24 +1,6 @@
-# Copyright (c) 2023, Riverbank Computing Limited
-# All rights reserved.
-#
-# This copy of SIP is licensed for use under the terms of the SIP License
-# Agreement.  See the file LICENSE for more details.
-#
-# This copy of SIP may also used under the terms of the GNU General Public
-# License v2 or v3 as published by the Free Software Foundation which can be
-# found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-2-Clause
+
+# Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
 
 
 from ..scoped_name import ScopedName
@@ -1077,6 +1059,7 @@ def p_module(p):
         elif pm.c_bindings != c_bindings:
             pm.parser_error(p, 1, "cannot mix 'C' and 'C++' modules")
 
+    # Deprecate and remove when Python v3.12 is no longer supported.
     if 'py_ssize_t_clean' in args:
         module.py_ssize_t_clean = args['py_ssize_t_clean']
 
@@ -1227,6 +1210,8 @@ def p_plugin(p):
 
     if pm.skipping:
         return
+
+    pm.deprecated(p, 1)
 
     pm.spec.plugins.append(p[2])
 
@@ -1663,6 +1648,9 @@ def p_pod_type(p):
         else:
             p[0] = _UNSIGNED_MAP[p[2]]
     else:
+        if p[1] == 'SIP_SSIZE_T':
+            p.parser.pm.deprecated(p, 1, instead="'Py_ssize_t'")
+
         p[0] = _ONE_WORD_MAP[p[1]]
 
 
@@ -1942,10 +1930,21 @@ def p_class_line(p):
         | type_code
         | type_header_code
         | type_hint_code
-        | BIGetReadBufferCode CODE_BLOCK
-        | BIGetWriteBufferCode CODE_BLOCK
-        | BIGetSegCountCode CODE_BLOCK
-        | BIGetCharBufferCode CODE_BLOCK"""
+        | deprecated_code_directives CODE_BLOCK"""
+
+
+def p_deprecated_code_directives(p):
+    """deprecated_code_directives : BIGetReadBufferCode
+        | BIGetWriteBufferCode
+        | BIGetSegCountCode
+        | BIGetCharBufferCode"""
+
+    pm = p.parser.pm
+
+    if pm.skipping:
+        return
+
+    pm.deprecated(p, 1)
 
 
 # The ctor annotations.
@@ -2781,6 +2780,7 @@ def p_opt_exceptions(p):
 
     if p[1] == 'throw':
         p[0] = p[3]
+        p.parser.pm.deprecated(p, 1)
     elif p[1] == 'noexcept':
         p[0] = ThrowArguments()
     else:
@@ -2791,7 +2791,7 @@ def p_opt_exception_list(p):
     """opt_exception_list : exception_list
         | empty"""
 
-    p[0] = ThrowArguments(arguments=[]) if p[1] is None else p[1]
+    p[0] = ThrowArguments() if p[1] is None else p[1]
 
 
 def p_exception_list(p):
@@ -3126,6 +3126,15 @@ def p_variable(p):
     cpp_name = p[2]
     annos_symbol = 3
     body = p[4]
+
+    # We don't currently support /AllowNone/ and /DisallowNone/ for variables.
+    # Generated variable setters support allow None for some (pointer) types
+    # but not others.  For pointer types we explicity disallow None.  This
+    # doesn't affect the generated code but does mean that type hints match
+    # those from previous versions.  This should be changed to properly support
+    # the annotations.
+    if len(type.derefs) != 0:
+        type.disallow_none = True
 
     annotations = p[annos_symbol]
 

@@ -1,24 +1,6 @@
-# Copyright (c) 2023, Riverbank Computing Limited
-# All rights reserved.
-#
-# This copy of SIP is licensed for use under the terms of the SIP License
-# Agreement.  See the file LICENSE for more details.
-#
-# This copy of SIP may also used under the terms of the GNU General Public
-# License v2 or v3 as published by the Free Software Foundation which can be
-# found in the files LICENSE-GPL2 and LICENSE-GPL3 included in this package.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# SPDX-License-Identifier: BSD-2-Clause
+
+# Copyright (c) 2024 Phil Thompson <phil@riverbankcomputing.com>
 
 
 from abc import abstractmethod
@@ -29,14 +11,11 @@ import stat
 import sys
 
 from .abstract_builder import AbstractBuilder
-from .buildable import BuildableFromSources
-from .code_generator import set_globals
 from .distinfo import write_metadata
 from .exceptions import UserException
 from .installable import Installable
 from .module import copy_sip_h, copy_sip_pyi
 from .py_versions import OLDEST_SUPPORTED_MINOR
-from .version import SIP_VERSION, SIP_VERSION_STR
 
 
 class Builder(AbstractBuilder):
@@ -141,18 +120,11 @@ class Builder(AbstractBuilder):
         # Build the wheel contents.
         self._generate_bindings()
 
-        # If all buildables use the limited API then the wheel does.
-        all_use_limited_api = True
-        for buildable in project.buildables:
-            if isinstance(buildable, BuildableFromSources):
-                if not buildable.uses_limited_api:
-                    all_use_limited_api = False
-                    break
-
-        # Create the wheel tag.
+        # Create the wheel tag.  If all buildables use the limited API then the
+        # wheel does.
         wheel_tag = []
 
-        if all_use_limited_api:
+        if project.all_modules_use_limited_abi:
             # When the ABI tag is 'abi3' the interpreter tag is interpreted as
             # a minimum Python version.  This doesn't seem to be defined in a
             # PEP but is implemented in current pips.
@@ -238,7 +210,7 @@ class Builder(AbstractBuilder):
 
         project = self.project
 
-        abi_major_version, abi_minor_version = project.abi_version.split('.')
+        abi_major_version, _ = project.abi_version.split('.')
 
         # Get the list of directories to search for .sip files.
         sip_include_dirs = list(project.sip_include_dirs)
@@ -260,11 +232,6 @@ class Builder(AbstractBuilder):
             # Generate the sip.h file for the shared sip module.
             copy_sip_h(abi_major_version, project.build_dir,
                     project.sip_module, version_info=project.version_info)
-
-        set_globals(SIP_VERSION,
-                SIP_VERSION_STR if project.version_info else None,
-                int(abi_major_version), int(abi_minor_version),
-                project.sip_module, UserException)
 
         # Generate the code for each set of bindings.
         api_files = []

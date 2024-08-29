@@ -1,6 +1,0 @@
-packaging
-ply
-setuptools
-
-[:python_version < "3.11"]
-tomli
