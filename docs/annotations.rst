@@ -398,9 +398,11 @@ Class Annotations
 
 .. class-annotation:: Deprecated
 
-    This boolean annotation is used to specify that the class is deprecated.
-    It is the equivalent of annotating all the class's constructors, function
-    and methods as being deprecated.
+    This optional string annotation is used to specify that the class is
+    deprecated.  Any string is appended to the deprecation warning and is
+    usually used to suggest an appropriate alternative.  It is the equivalent
+    of annotating all the class's constructors, function and methods as being
+    deprecated.
 
 
 .. class-annotation:: FileExtension
@@ -711,9 +713,9 @@ Function Annotations
 
 .. function-annotation:: Deprecated
 
-    This boolean annotation is used to specify that the constructor or function
-    is deprecated.  A deprecation warning is issued whenever the constructor or
-    function is called.
+    This optional string annotation is used to specify that the constructor or
+    function is deprecated.  Any string is appended to the deprecation warning
+    and is usually used to suggest an appropriate alternative.
 
 
 .. function-annotation:: DisallowNone

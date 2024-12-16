@@ -50,20 +50,28 @@ def _module(pf, spec):
 
     # Generate the imports. Note that we assume the super-types are the
     # standard SIP ones.
+    stdlib_imports = ['collections', 're', 'typing']
+
     if spec.abi_version >= (13, 0):
         for enum in spec.enums:
             if enum.module is spec.module:
-                first = _separate(pf, first=first)
-                pf.write('import enum\n')
+                stdlib_imports.append('enum')
                 break
 
-    if spec.sip_module:
+    if stdlib_imports:
         first = _separate(pf, first=first)
+        pf.write('import ' + ', '.join(stdlib_imports) + '\n')
         pf.write(
-f'''import typing
-
-import {spec.sip_module}
+f'''
+try:
+    from warnings import deprecated
+except ImportError:
+    pass
 ''')
+            
+    if spec.sip_module:
+        first = _separate(pf, first=first, minimum=1)
+        pf.write(f'import {spec.sip_module}\n')
 
     imports = []
 
@@ -167,6 +175,9 @@ def _class(pf, spec, klass, defined, indent=0):
         _separate(pf, indent=indent)
 
         s = _indent(indent)
+
+        if klass.deprecated is not None:
+            s += f'@deprecated("{klass.deprecated}")\n' + _indent(indent)
 
         s += f'class {klass.py_name.name}('
 
@@ -328,6 +339,10 @@ def _ctor(pf, spec, ctor, overloaded, defined, indent):
         s += '@typing.overload\n'
         pf.write(s)
 
+    if ctor.deprecated is not None:
+        deprecated_message = f'"""{ctor.deprecated}"""'
+        pf.write(_indent(indent) + f'@deprecated({deprecated_message})\n')
+        
     s = _indent(indent)
     s += 'def __init__'
     s += _python_signature(spec, ctor.py_signature, defined)
@@ -518,6 +533,10 @@ def _overload(pf, spec, overload, overloaded, first_overload, is_method,
     if is_method and overload.is_static:
         pf.write(_indent(indent) + '@staticmethod\n')
 
+    if overload.deprecated is not None:
+        deprecated_message = f'"""{overload.deprecated}"""'
+        pf.write(_indent(indent) + f'@deprecated({deprecated_message})\n')
+        
     py_name = overload.common.py_name.name
     py_signature = overload.py_signature
 

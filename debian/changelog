@@ -1,3 +1,21 @@
+sip6 (6.9.1-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Refresh intersphinx_local.diff.
+  * Bump required setuptools version to 69.5, following upstream.
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Thu, 12 Dec 2024 14:01:23 +0300
+
+sip6 (6.9.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Refresh patches for the new release.
+  * Do not ship parsetab.py in a versioned (python3.13) directory.
+  * Make dh_python3 generate a dependency on python3-setuptools, not on
+    python3-pkg-resources (closes: #1083771).
+
+ -- Dmitry Shachnev <mitya57@debian.org>  Sun, 08 Dec 2024 17:15:55 +0300
+
 sip6 (6.8.6-1) unstable; urgency=medium
 
   * New upstream release.

@@ -227,9 +227,7 @@ static sipWrapperType sipWrapper_Type = {
         0,                  /* ht_slots */
         0,                  /* ht_qualname */
         0,                  /* ht_cached_keys */
-#if PY_VERSION_HEX >= 0x03090000
         0,                  /* ht_module */
-#endif
 #if !defined(STACKLESS)
     },
 #endif
@@ -547,7 +545,7 @@ static const sipAPIDef sip_api = {
     sip_api_instance_destroyed_ex,
     sip_api_is_py_method_12_8,
     sip_api_next_exception_handler,
-    NULL,
+    sip_api_deprecated_13_9,
     NULL,
     NULL,
     NULL,
@@ -2591,7 +2589,7 @@ static int parseResult(PyObject *method, PyObject *res,
             case 'a':
                 {
                     char *p = va_arg(va, char *);
-                    int enc;
+                    int enc = -1;
 
                     switch (*fmt++)
                     {
@@ -2606,9 +2604,6 @@ static int parseResult(PyObject *method, PyObject *res,
                     case '8':
                         enc = parseString_AsUTF8Char(arg, p);
                         break;
-
-                    default:
-                        enc = -1;
                     }
 
                     if (enc < 0)
@@ -2845,7 +2840,7 @@ static int parseResult(PyObject *method, PyObject *res,
                 {
                     int key = va_arg(va, int);
                     const char **p = va_arg(va, const char **);
-                    PyObject *keep;
+                    PyObject *keep = NULL;
 
                     switch (*fmt++)
                     {
@@ -2860,9 +2855,6 @@ static int parseResult(PyObject *method, PyObject *res,
                     case '8':
                         keep = parseString_AsUTF8String(arg, p);
                         break;
-
-                    default:
-                        keep = NULL;
                     }
 
                     if (keep == NULL)
@@ -5068,7 +5060,7 @@ static int parsePass2(PyObject *self, int selfarg, PyObject *sipArgs,
 
                 if (arg != NULL)
                 {
-                    int enc;
+                    int enc = -1;
 
                     switch (sub_fmt)
                     {
@@ -6675,6 +6667,16 @@ static void sip_api_abstract_method(const char *classname, const char *method)
  */
 int sip_api_deprecated(const char *classname, const char *method)
 {
+    return sip_api_deprecated_13_9(classname, method, NULL);
+}
+
+
+/*
+ * Report a deprecated class or method with an optional message.
+ */
+int sip_api_deprecated_13_9(const char *classname, const char *method,
+        const char *message)
+{
     char buf[100];
 
     if (classname == NULL)
@@ -6684,7 +6686,10 @@ int sip_api_deprecated(const char *classname, const char *method)
                 classname);
     else
         PyOS_snprintf(buf, sizeof (buf), "%s.%s() is deprecated", classname,
-                method);
+                method );
+
+    if (message != NULL)
+        PyOS_snprintf(&buf[strlen(buf)], sizeof (buf), ": %s", message);
 
     return PyErr_WarnEx(PyExc_DeprecationWarning, buf, 1);
 }
@@ -9720,9 +9725,7 @@ sipWrapperType sipSimpleWrapper_Type = {
         0,                  /* ht_slots */
         0,                  /* ht_qualname */
         0,                  /* ht_cached_keys */
-#if PY_VERSION_HEX >= 0x03090000
         0,                  /* ht_module */
-#endif
 #if !defined(STACKLESS)
     },
 #endif
@@ -11466,7 +11469,6 @@ static void *sip_api_unicode_data(PyObject *obj, int *char_size,
  */
 static int sip_api_get_buffer_info(PyObject *obj, sipBufferInfoDef *bi)
 {
-    int rc;
     Py_buffer *buffer;
 
     if (!PyObject_CheckBuffer(obj))
@@ -11480,27 +11482,16 @@ static int sip_api_get_buffer_info(PyObject *obj, sipBufferInfoDef *bi)
 
     buffer = (Py_buffer *)bi->bi_internal;
 
-    if (PyObject_GetBuffer(obj, buffer, PyBUF_FORMAT) < 0)
+    if (PyObject_GetBuffer(obj, buffer, PyBUF_SIMPLE) < 0)
         return -1;
 
-    if (buffer->ndim == 1)
-    {
-        bi->bi_buf = buffer->buf;
-        bi->bi_obj = buffer->obj;
-        bi->bi_len = buffer->len;
-        bi->bi_readonly = buffer->readonly;
-        bi->bi_format = buffer->format;
+    bi->bi_buf = buffer->buf;
+    bi->bi_obj = buffer->obj;
+    bi->bi_len = buffer->len;
+    bi->bi_readonly = buffer->readonly;
+    bi->bi_format = buffer->format;
 
-        rc = 1;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_TypeError, "a 1-dimensional buffer is required");
-        PyBuffer_Release(buffer);
-        rc = -1;
-    }
-
-    return rc;
+    return 1;
 }
 
 

@@ -223,9 +223,7 @@ static sipWrapperType sipWrapper_Type = {
         0,                  /* ht_slots */
         0,                  /* ht_qualname */
         0,                  /* ht_cached_keys */
-#if PY_VERSION_HEX >= 0x03090000
         0,                  /* ht_module */
-#endif
 #if !defined(STACKLESS)
     },
 #endif
@@ -606,6 +604,10 @@ static const sipAPIDef sip_api = {
      * The following are part of the public API.
      */
     sip_api_py_type_dict_ref,
+    /*
+     * The following are part of the private API.
+     */
+    sip_api_deprecated_12_16,
 };
 
 
@@ -2895,7 +2897,7 @@ static int parseResult(PyObject *method, PyObject *res,
             case 'a':
                 {
                     char *p = va_arg(va, char *);
-                    int enc;
+                    int enc = -1;
 
                     switch (*fmt++)
                     {
@@ -2910,9 +2912,6 @@ static int parseResult(PyObject *method, PyObject *res,
                     case '8':
                         enc = parseString_AsUTF8Char(arg, p);
                         break;
-
-                    default:
-                        enc = -1;
                     }
 
                     if (enc < 0)
@@ -3183,7 +3182,7 @@ static int parseResult(PyObject *method, PyObject *res,
                 {
                     int key = va_arg(va, int);
                     const char **p = va_arg(va, const char **);
-                    PyObject *keep;
+                    PyObject *keep = NULL;
 
                     switch (*fmt++)
                     {
@@ -3198,9 +3197,6 @@ static int parseResult(PyObject *method, PyObject *res,
                     case '8':
                         keep = parseString_AsUTF8String(arg, p);
                         break;
-
-                    default:
-                        keep = NULL;
                     }
 
                     if (keep == NULL)
@@ -5787,7 +5783,7 @@ static int parsePass2(sipSimpleWrapper *self, int selfarg, PyObject *sipArgs,
 
                 if (arg != NULL)
                 {
-                    int enc;
+                    int enc = -1;
 
                     switch (sub_fmt)
                     {
@@ -7786,6 +7782,16 @@ static void sip_api_abstract_method(const char *classname, const char *method)
  */
 int sip_api_deprecated(const char *classname, const char *method)
 {
+  return sip_api_deprecated_12_16(classname, method, NULL);
+}
+
+
+/*
+ * Report a deprecated class or method with an optional message.
+ */
+int sip_api_deprecated_12_16(const char *classname, const char *method,
+        const char *message)
+{
     char buf[100];
 
     if (classname == NULL)
@@ -7796,6 +7802,9 @@ int sip_api_deprecated(const char *classname, const char *method)
     else
         PyOS_snprintf(buf, sizeof (buf), "%s.%s() is deprecated", classname,
                 method);
+
+    if (message != NULL)
+        PyOS_snprintf(&buf[strlen(buf)], sizeof (buf), ": %s", message);
 
     return PyErr_WarnEx(PyExc_DeprecationWarning, buf, 1);
 }
@@ -10994,9 +11003,7 @@ sipWrapperType sipSimpleWrapper_Type = {
         0,                  /* ht_slots */
         0,                  /* ht_qualname */
         0,                  /* ht_cached_keys */
-#if PY_VERSION_HEX >= 0x03090000
         0,                  /* ht_module */
-#endif
 #if !defined(STACKLESS)
     },
 #endif
@@ -12827,28 +12834,22 @@ static int sip_api_is_user_type(const sipWrapperType *wt)
 
 
 /*
- * Return a frame from the execution stack.  Note that we use 'struct _frame'
- * rather than PyFrameObject because the latter wasn't exposed to the limited
- * API until Python v3.9.
+ * Return a frame from the execution stack.
  */
-static struct _frame *sip_api_get_frame(int depth)
+static PyFrameObject *sip_api_get_frame(int depth)
 {
 #if defined(PYPY_VERSION)
     /* PyPy only supports a depth of 0. */
     return NULL;
 #else
-    struct _frame *frame = PyEval_GetFrame();
+    PyFrameObject *frame = PyEval_GetFrame();
 
     while (frame != NULL && depth > 0)
     {
-#if PY_VERSION_HEX < 0x03090000
-        frame = frame->f_back;
-#else
         frame = PyFrame_GetBack(frame);
 
         /* Historically we return a borrowed reference. */
         Py_XDECREF(frame);
-#endif
         --depth;
     }
 
@@ -12971,7 +12972,6 @@ static void *sip_api_unicode_data(PyObject *obj, int *char_size,
  */
 static int sip_api_get_buffer_info(PyObject *obj, sipBufferInfoDef *bi)
 {
-    int rc;
     Py_buffer *buffer;
 
     if (!PyObject_CheckBuffer(obj))
@@ -12985,26 +12985,15 @@ static int sip_api_get_buffer_info(PyObject *obj, sipBufferInfoDef *bi)
 
     buffer = (Py_buffer *)bi->bi_internal;
 
-    if (PyObject_GetBuffer(obj, buffer, PyBUF_FORMAT) < 0)
+    if (PyObject_GetBuffer(obj, buffer, PyBUF_SIMPLE) < 0)
         return -1;
 
-    if (buffer->ndim == 1)
-    {
-        bi->bi_buf = buffer->buf;
-        bi->bi_obj = buffer->obj;
-        bi->bi_len = buffer->len;
-        bi->bi_format = buffer->format;
+    bi->bi_buf = buffer->buf;
+    bi->bi_obj = buffer->obj;
+    bi->bi_len = buffer->len;
+    bi->bi_format = buffer->format;
 
-        rc = 1;
-    }
-    else
-    {
-        PyErr_SetString(PyExc_TypeError, "a 1-dimensional buffer is required");
-        PyBuffer_Release(buffer);
-        rc = -1;
-    }
-
-    return rc;
+    return 1;
 }
 
 

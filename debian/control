@@ -13,7 +13,7 @@ Build-Depends: debhelper-compat (= 13),
                python3-myst-parser <!nodoc>,
                python3-packaging,
                python3-ply,
-               python3-setuptools (>= 64),
+               python3-setuptools (>= 69.5),
                python3-setuptools-scm (>= 8),
                python3-sphinx <!nodoc>,
                python3-sphinx-rtd-theme <!nodoc>
@@ -27,7 +27,7 @@ Testsuite: autopkgtest-pkg-pybuild
 Package: python3-sipbuild
 Architecture: all
 Section: python
-Depends: python3-ply, python3-setuptools, ${misc:Depends}, ${python3:Depends}
+Depends: python3-ply, ${misc:Depends}, ${python3:Depends}
 Description: Python bindings generator for C/C++ libraries — the build system
  SIP is a collection of tools that makes it very easy to create Python bindings
  for C and C++ libraries.
